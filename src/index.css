@@ -1,0 +1,79 @@
+/* Fuente para títulos: NewYork (PERSONAL USE) */
+@font-face {
+  font-family: 'NewYork';
+  src: url('./assets/tipografias/NewYork PERSONAL USE.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Fuente script: Bacalisties */
+@font-face {
+  font-family: 'Bacalisties';
+  src: url('./assets/tipografias/Bacalisties.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Ancho máximo del contenedor: pensado solo para dispositivos móviles */
+  --max-width-mobile: 430px;
+
+  /* Tipografía de títulos */
+  --fuente-titulos: 'NewYork', Georgia, 'Times New Roman', serif;
+
+  /* Tipografía script (títulos decorativos) */
+  --fuente-script: 'Bacalisties', cursive;
+
+  /* ===== Escala de tamaños para títulos =====
+     Ajustables desde aquí para todo el proyecto */
+  --titulo-1: 62px; /* Título principal (ej. nombres de los novios) */
+  --titulo-2: 34px; /* Título de sección */
+  --titulo-3: 28px; /* Subtítulo */
+  --titulo-4: 20px; /* Encabezado pequeño */
+}
+
+h1 {
+  font-family: var(--fuente-titulos);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  /* El body nunca scrollea por sí mismo: solo el documento (html) */
+  overflow: hidden;
+  font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background-color: #e8e8e8;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100svh;
+}
+
+/* Contenedor con ancho de móvil FIJO (no se deforma en pantallas menores) */
+.app-container {
+  width: var(--max-width-mobile);
+  min-height: 100svh;
+  margin: 0 auto;
+  background-color: #ffffff;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.12);
+  overflow-x: hidden;
+  position: relative;
+}

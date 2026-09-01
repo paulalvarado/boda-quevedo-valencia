@@ -1,0 +1,208 @@
+/* ============================================
+   Sección: Inicio
+   ============================================ */
+.section-inicio {
+  position: relative;
+  width: 100%;
+  /* Proporción original de SOBRE.png (1080 x 1370): la imagen
+     ocupa el 100% del ancho del contenedor y se ve completa */
+  aspect-ratio: 1080 / 1370;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  padding: 40px 24px;
+}
+
+/* Encabezado de la sección inicio */
+.inicio-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Logo / monograma */
+.inicio-logo {
+  width: 60px;
+  height: auto;
+}
+
+/* Nombres: ANDREA & DANIEL */
+.inicio-nombres {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+  font-family: var(--fuente-titulos);
+  color: #2a2a2a;
+  letter-spacing: 1px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.inicio-nombres span {
+  display: block;
+  font-size: var(--titulo-1);
+  font-weight: 500;
+  /* Animación de escritura letra por letra */
+  clip-path: inset(0 100% 0 0);
+  animation: escribir 0.8s steps(6, end) forwards;
+}
+
+.inicio-nombres span:first-child {
+  margin-bottom: -2px;
+}
+
+/* El "&" se escribe de una sola vez */
+.inicio-nombres span:nth-child(2) {
+  animation: escribir 0.3s steps(1, end) forwards;
+  animation-delay: 0.9s;
+}
+
+/* Última línea: DANIEL, con cursor parpadeante al final */
+.inicio-nombres span:last-child {
+  animation-delay: 1.4s;
+}
+
+.inicio-nombres span:last-child::after {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 0.85em;
+  margin-left: 4px;
+  vertical-align: -0.05em;
+  background-color: #2a2a2a;
+  opacity: 0;
+  /* Parpadea ~2.5s y desaparece directamente al terminar (forwards) */
+  animation: cursor 0.5s linear 5 forwards;
+  animation-delay: 2.2s;
+}
+
+.inicio-ampersand {
+  font-size: var(--titulo-1) !important;
+  letter-spacing: 0;
+  margin: -35px 0px;
+}
+
+/* Fecha debajo de los nombres */
+.inicio-fecha {
+  font-family: var(--fuente-titulos);
+  font-size: 24px;
+  font-weight: 500;
+  color: #2a2a2a;
+  /* 40px + gap(20px) del header = ~60px de separación */
+  margin-top: 9rem;
+}
+
+/* Animación: revelado letra por letra */
+@keyframes escribir {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* Cursor de escritura: parpadea y termina oculto */
+@keyframes cursor {
+  0%,
+  49.9% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Sección: Nos Casamos
+   ============================================ */
+.section-nos-casamos {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* Altura al doble de la proporción natural del video (zoom):
+     los laterales se recortan, sin distorsión */
+  aspect-ratio: 430 / 600;
+}
+
+/* Video de fondo de la sección (escalado junto con toda la página) */
+.nos-casamos-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Capa azul semitransparente superpuesta sobre el video */
+.nos-casamos-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* Imagen central (tarjeta) superpuesta */
+.nos-casamos-central {
+  position: absolute;
+  width: 99%;
+  height: auto;
+  /* top/left llegan por props y representan el centro del elemento */
+  transform: translate(-50%, -50%);
+}
+
+/* Rama de hojas decorativa sobre el contenido */
+.nos-casamos-rama {
+  position: absolute;
+  width: 50%;
+  height: auto;
+  /* top/left llegan por props y representan el centro del elemento */
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* Contenido central (título + textos) sobre la imagen */
+.nos-casamos-contenido {
+  position: absolute;
+  /* top/left llegan por props y representan el centro del elemento */
+  transform: translate(-50%, -50%);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  width: 260px;
+}
+
+/* Título con fuente Bacalisties */
+.nos-casamos-titulo {
+  font-family: var(--fuente-script);
+  font-weight: 500;
+  color: #2a2a2a;
+  margin: 0;
+}
+
+/* Texto de invitación */
+.nos-casamos-invitacion {
+  font-family: var(--fuente-titulos);
+  font-weight: 400;
+  color: #2a2a2a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Fecha */
+.nos-casamos-fecha {
+  font-family: var(--fuente-titulos);
+  font-weight: 500;
+  color: #2a2a2a;
+  margin: 0;
+}
