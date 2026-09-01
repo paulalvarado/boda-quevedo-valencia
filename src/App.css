@@ -206,3 +206,165 @@
   color: #2a2a2a;
   margin: 0;
 }
+
+/* ============================================
+   Sección: Nuestra Historia
+   ============================================ */
+.section-nuestra-historia {
+  position: relative;
+  width: 100%;
+  /* Fondo de papel texturizado con bordes rasgados */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+/* Contenido de la sección: título + párrafo + fotos, centrado */
+.nuestra-historia-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 32px;
+  max-width: 100%;
+}
+
+/* Título: "Nuestra" (script) sobre "HISTORIA" (serif), centrado */
+.nuestra-historia-titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+}
+
+/* Palabra "Nuestra" con tipografía Bacalisties */
+.nuestra-historia-script {
+  font-family: var(--fuente-script);
+  font-size: 56px;
+  font-weight: 400;
+  color: #2a2a2a;
+  line-height: 1.1;
+  margin-bottom: -6px;
+}
+
+/* Palabra "HISTORIA" con tipografía NewYork */
+.nuestra-historia-serif {
+  font-family: var(--fuente-titulos);
+  font-size: var(--titulo-2);
+  font-weight: 500;
+  color: #2a2a2a;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  margin-top: -15px;
+}
+
+/* Párrafo centrado de la historia */
+.nuestra-historia-parrafo p {
+  font-family: var(--fuente-titulos);
+  font-size: 15px;
+  font-weight: 400;
+  color: #2a2a2a;
+  line-height: 1;
+  margin: 0;
+  width: 300px;
+}
+
+.nuestra-historia-parrafo p + p {
+  margin-top: 16px;
+}
+
+/* Imagen de fotos (collage) */
+.nuestra-historia-fotos {
+  width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   Sección: Conteo
+   ============================================ */
+.section-conteo {
+  position: relative;
+  width: 100%;
+  background-color: #ffffff;
+
+  display: flex;
+  justify-content: center;
+  padding: 60px 24px;
+}
+
+/* Contenido de la sección: título + temporizador, centrado */
+.conteo-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Título con fuente NewYork */
+.conteo-titulo {
+  font-family: var(--fuente-titulos);
+  font-weight: 500;
+  color: #2a2a2a;
+  line-height: 1.3;
+  margin: 0;
+}
+
+/* Fila del temporizador: unidades separadas por ':' */
+.conteo-temporizador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* Cada unidad (número + etiqueta) */
+.conteo-unidad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 52px;
+}
+
+/* Número (días, horas, minutos, segundos) con NewYork */
+.conteo-numero {
+  font-family: var(--fuente-titulos);
+  font-weight: 500;
+  color: #2a2a2a;
+  line-height: 1;
+}
+
+/* Etiqueta (DÍAS, HORAS, MIN, SEG) */
+.conteo-etiqueta {
+  font-family: var(--fuente-titulos);
+  font-weight: 400;
+  color: #2a2a2a;
+  letter-spacing: 1px;
+}
+
+/* Separador ':' entre unidades */
+.conteo-separador {
+  font-family: var(--fuente-titulos);
+  font-weight: 500;
+  color: #2a2a2a;
+  line-height: 1;
+  align-self: center;
+  margin-top: -14px;
+}
+
+/* Imagen de la sección: cubre el 100% del ancho hasta los extremos,
+   anulando el padding horizontal del contenedor (24px a cada lado) */
+.conteo-fotos {
+  display: block;
+  width: calc(100% + 48px);
+  height: auto;
+  margin-left: -24px;
+  margin-right: -24px;
+}
