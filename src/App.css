@@ -294,6 +294,7 @@
   display: flex;
   justify-content: center;
   padding: 60px 24px;
+  padding-bottom: 0px;
 }
 
 /* Contenido de la sección: título + temporizador, centrado */
@@ -367,4 +368,466 @@
   height: auto;
   margin-left: -24px;
   margin-right: -24px;
+}
+
+/* ============================================
+   Sección: Detalles del Evento
+   ============================================ */
+.section-detalles {
+  position: relative;
+  width: 100%;
+  /* Fondo de papel texturizado (FONDO.png) */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  justify-content: center;
+  /* 15% en los laterales + 60px superior e inferior */
+  padding: 90px 15%;
+}
+
+/* Tarjeta interior con fondo Rectangle 6.png */
+.detalles-tarjeta {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px 20px 40px;
+}
+
+/* Rosa azul: centrada en el eje X y elevada 50px sobre la tarjeta */
+.detalles-rosa {
+  display: block;
+  width: 200px;
+  height: auto;
+  margin: -75px auto 0;
+  object-fit: contain;
+}
+
+.detalles-titulo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.detalles-titulo span:first-child {
+  font-family: var(--fuente-script);
+  font-size: 40px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  transform: translateX(-20px);
+}
+
+.detalles-titulo span:last-child {
+  font-family: var(--fuente-titulos);
+  font-size: 30px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  transform: translateX(30px) translateY(-15px);
+}
+
+.detalles-ubicacion {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+}
+
+.detalles-ubicacion img {
+  width: 50px;
+  height: auto;
+}
+
+.detalles-ubicacion span {
+  font-family: var(--fuente-titulos);
+  font-size: 32px;
+  font-weight: 400;
+  color: #fff;
+  text-align: start;
+  text-transform: uppercase;
+  line-height: 30px;
+  font-weight: 400;
+}
+
+.detalles-hora {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 20px;
+}
+
+.detalles-hora span {
+  font-family: var(--fuente-titulos);
+  font-size: 30px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 30px;
+}
+
+.detalles-hora div {
+  width: 40px;
+  height: 1px;
+  background-color: #fff;
+  margin: 20px auto;
+}
+
+.detalles-recepcion {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 20px;
+}
+
+.detalles-recepcion span {
+  font-family: var(--fuente-titulos);
+  font-size: 30px;
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 30px;
+}
+
+.detalles-botones {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.detalles-botones a {
+  display: block;
+  width: 140px;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  font-family: var(--fuente-titulos);
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #ffffff70;
+  border-radius: 5px;
+}
+
+.detalles-rosa-bl-1 {
+  position: absolute;
+  width: 140px;
+  height: auto;
+  bottom: -30px;
+  left: -2rem;
+  z-index: 1;
+}
+
+.detalles-rosa-bl-2 {
+  position: absolute;
+  width: 160px;
+  height: auto;
+  bottom: -25px;
+  left: -0.5rem;
+}
+
+/* ============================================
+   Sección: Dress Code
+   ============================================ */
+.section-dress-code {
+  position: relative;
+  width: 100%;
+}
+
+/* La imagen define la altura de la sección:
+   no es background, el <img> determina el alto */
+.dress-code-imagen {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dress-code-content {
+  position: absolute;
+  width: 75%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.dress-code-papel {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dress-code-text {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-family: var(--fuente-titulos);
+  font-size: 16px;
+  font-weight: 400;
+  color: #2a2a2a;
+}
+
+.dress-code-text span:first-child {
+  font-size: 50px;
+  font-weight: 500;
+  line-height: 0.8;
+  margin-bottom: 34px;
+  display: block !important;
+}
+
+.dress-code-text p {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.dress-code-text p:first-child {
+  margin-top: 20px !important;
+  margin-bottom: 0;
+}
+
+.dress-code-colors {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.dress-code-color {
+  width: 50px;
+  height: 50px;
+}
+
+.dress-code-color img {
+  width: 100%;
+  height: auto;
+}
+
+/* ============================================
+   Layout común: fondo FONDO.png compartido
+   por varias secciones
+   ============================================ */
+.layout-fondo {
+  position: relative;
+  width: 100%;
+  min-height: 2000px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ============================================
+   Sección: Muestras de Cariño
+   ============================================ */
+.section-muestras-de-carino {
+  position: relative;
+  width: 100%;
+}
+
+/* Hojas decorativas (Layer 8) */
+.muestras-de-carino-hojas-1 {
+  position: absolute;
+  height: 250px;
+  top: 120px;
+  left: 20%;
+  transform: translate(-50%, -0%);
+}
+
+/* Hojas decorativas (Layer 8 copy) */
+.muestras-de-carino-hojas-2 {
+  position: absolute;
+  height: 400px;
+  top: 90px;
+  left: 31%;
+  transform: translate(-50%, -0%);
+}
+
+/* Sobre */
+.muestras-de-carino-sobre {
+  position: absolute;
+  width: 75%;
+  top: 160px;
+  left: 50%;
+  transform: translate(-55%, -0%);
+}
+
+/* Contenedor de la carta */
+.muestras-de-carino-carta-container {
+  position: absolute;
+  width: 340px;
+  min-height: 200px;
+  top: 340px;
+  right: 10px;
+  transform: translate(0%, 0%);
+}
+
+/* Imagen de la carta */
+.muestras-de-carino-carta-img {
+  width: 100%;
+  height: 100%;
+}
+
+/* Contenido de la carta (centrado) */
+.muestras-de-carino-contenido {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Título "Muestras" */
+.muestras-de-carino-titulo-1 {
+  font-size: 48px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--fuente-script);
+  color: #fff;
+  margin-left: -35px;
+}
+
+/* Título "de cariño" */
+.muestras-de-carino-titulo-2 {
+  font-size: 28px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--fuente-titulos);
+  color: #fff;
+  text-transform: uppercase;
+  margin-left: 35px;
+  margin-top: -25px;
+}
+
+/* Texto de la carta */
+.muestras-de-carino-texto {
+  font-size: 14px;
+  margin: 0;
+  text-align: center;
+  font-family: var(--fuente-titulos);
+  color: #fff;
+  font-weight: 400;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.section-espacios {
+  width: 100%;
+  padding: 60px 0px;
+  position: relative;
+}
+
+/* Flores esquina superior izquierda */
+.espacios-flor-tl {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  width: 180px;
+  height: auto;
+}
+
+.espacios-flor-tl img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Flores esquina inferior derecha */
+.espacios-flor-br {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  width: 180px;
+  height: auto;
+}
+
+.espacios-flor-br img {
+  width: 100%;
+  display: block;
+}
+
+/* Cuadro central */
+.espacios-cuadro {
+  width: 85%;
+  margin: auto;
+  display: block;
+}
+
+/* Contenido centrado */
+.espacios-contenido {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #000;
+  font-family: var(--fuente-titulos);
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 0.7;
+}
+
+/* "Tenemos" */
+.espacios-titulo-1 {
+  font-family: var(--fuente-script);
+  font-size: 46px;
+  margin-left: -35px;
+}
+
+/* "RESERVADO" */
+.espacios-titulo-2 {
+  font-size: 26px;
+  margin-left: 35px;
+}
+
+/* Fila del número */
+.espacios-numero-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 6px;
+}
+
+/* Número "1" */
+.espacios-numero {
+  font-size: 66px;
+}
+
+/* Etiquetas ESPACIO / PARATI */
+.espacios-numero-etiquetas {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  font-size: 30px;
+  gap: 4px;
 }

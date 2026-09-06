@@ -4,6 +4,11 @@ import Inicio from './sections/Inicio/Inicio.jsx';
 import NosCasamos from './sections/NosCasamos/NosCasamos.jsx';
 import NuestraHistoria from './sections/NuestraHistoria/NuestraHistoria.jsx';
 import Conteo from './sections/Conteo/Conteo.jsx';
+import DetallesDelEvento from './sections/DetallesDelEvento/DetallesDelEvento.jsx';
+import DressCode from './sections/DressCode/DressCode.jsx';
+import MuestrasDeCarino from './sections/MuestrasDeCarino/MuestrasDeCarino.jsx';
+import fondoComun from './assets/5_detalles_del_evento/FONDO.png';
+import Espacios from './sections/Espacios/Espacios.jsx';
 
 const ANCHO_MOVIL = 430;
 
@@ -75,7 +80,36 @@ function App() {
 					etiquetaSize="14px"
 				/>
 
-				{/* Aquí se agregarán las demás secciones */}
+				<DetallesDelEvento
+					zIndex={1}
+					marginTop="0"
+					marginBottom="0"
+				/>
+
+				<DressCode
+					zIndex={1}
+					marginTop="-2.5rem"
+					marginBottom="0"
+				/>
+
+				{/* Layout común: las secciones de aquí en adelante comparten
+				    el fondo FONDO.png (min-height 400px) */}
+				<div
+					className="layout-fondo"
+					style={{ backgroundImage: `url(${fondoComun})` }}>
+					<MuestrasDeCarino
+						zIndex={1}
+						marginTop="-2.5rem"
+						marginBottom="0"
+					/>
+					<Espacios
+						zIndex={1}
+						marginTop="10px"
+						marginBottom="0"
+					/>
+
+					{/* Las siguientes secciones irán dentro de este layout */}
+				</div>
 			</main>
 		</div>
 	);

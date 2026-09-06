@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rosa Floreciendo en Canvas</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9; /* Fondo suave para resaltar la rosa */
+        }
+        canvas {
+            /* Sombra suave opcional para darle profundidad al lienzo */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            background-color: #ffffff;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="roseCanvas" width="600" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById('roseCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Crear el objeto de imagen
+        const img = new Image();
+        // RUTA DE LA IMAGEN: Cambia esto si tu imagen tiene otro nombre o está en otra carpeta
+        img.src = 'BLUE_ROSE.png'; 
+
+        // Variables de animación
+        let scale = 0.05;   // Escala inicial (muy pequeña)
+        let opacity = 0;    // Opacidad inicial (transparente)
+        const scaleSpeed = 0.008; // Qué tan rápido crece
+        const opacitySpeed = 0.015; // Qué tan rápido aparece
+
+        // Iniciar la animación cuando la imagen cargue
+        img.onload = () => {
+            animateBloom();
+        };
+
+        function animateBloom() {
+            // 1. Limpiar el lienzo en cada frame
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 2. Actualizar las variables de animación
+            if (scale < 1) {
+                scale += scaleSpeed;
+            }
+            if (opacity < 1) {
+                opacity += opacitySpeed;
+            }
+
+            // 3. Guardar el estado actual del contexto
+            ctx.save();
+
+            // 4. Aplicar opacidad
+            ctx.globalAlpha = opacity > 1 ? 1 : opacity;
+
+            // 5. Mover el punto de origen al centro del canvas para escalar desde ahí
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+            
+            // 6. Escalar el contexto
+            ctx.scale(scale, scale);
+
+            // 7. Dibujar la imagen centrada 
+            // (Posición X e Y negativas para que el centro de la imagen coincida con el centro del canvas)
+            const imgWidth = img.width;
+            const imgHeight = img.height;
+            
+            // Ajustar el tamaño si la imagen es más grande que el canvas
+            const maxDimension = Math.min(canvas.width, canvas.height) * 0.8;
+            const aspectRatio = imgWidth / imgHeight;
+            
+            let drawWidth = imgWidth;
+            let drawHeight = imgHeight;
+
+            if (imgWidth > maxDimension || imgHeight > maxDimension) {
+                if (imgWidth > imgHeight) {
+                    drawWidth = maxDimension;
+                    drawHeight = maxDimension / aspectRatio;
+                } else {
+                    drawHeight = maxDimension;
+                    drawWidth = maxDimension * aspectRatio;
+                }
+            }
+
+            ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
+
+            // 8. Restaurar el contexto original
+            ctx.restore();
+
+            // 9. Solicitar el siguiente frame si la animación no ha terminado
+            if (scale < 1 || opacity < 1) {
+                requestAnimationFrame(animateBloom);
+            }
+        }
+    </script>
+</body>
+</html>
