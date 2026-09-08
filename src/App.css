@@ -82,9 +82,12 @@
 }
 
 .inicio-ampersand {
-  font-size: var(--titulo-1) !important;
-  letter-spacing: 0;
-  margin: -35px 0px;
+  width: 48px;
+  margin: -20px 0px;
+  /* El "&" se escribe de una sola vez y en secuencia tras ANDREA */
+  clip-path: inset(0 100% 0 0);
+  animation: escribir 0.3s steps(1, end) forwards;
+  animation-delay: 0.9s;
 }
 
 /* Fecha debajo de los nombres */
@@ -943,5 +946,362 @@ main section.animacion-entrada-activa {
 @media (prefers-reduced-motion: reduce) {
   .petalos {
     display: none;
+  }
+}
+
+/* ============================================
+   Controles de música de fondo
+   ============================================ */
+.controles-musica {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 10005;
+  display: flex;
+  align-items: center;
+}
+
+.controles-musica-grupo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(42, 42, 42, 0.14);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.boton-musica {
+  position: relative;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(111, 141, 176, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: #506e90;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.boton-musica:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.boton-musica:active {
+  transform: scale(0.96);
+}
+
+.boton-musica-icono {
+  display: block;
+}
+
+/* Anillo de pulso cuando la música está sonando */
+.boton-musica.sonando::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(111, 141, 176, 0.55);
+  animation: musica-pulso 2s ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes musica-pulso {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Botón de volumen */
+.boton-volumen {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(111, 141, 176, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: #506e90;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.boton-volumen:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.boton-volumen:active {
+  transform: scale(0.96);
+}
+
+.boton-volumen.silenciado {
+  color: #b9c4d0;
+}
+
+/* Panel deslizante de volumen */
+.control-volumen {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 5px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(111, 141, 176, 0.35);
+  background: linear-gradient(180deg, #ffffff 0%, #eef3f8 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 14px rgba(80, 110, 144, 0.16);
+  animation: aparece-volumen 0.3s ease-out;
+}
+
+.control-volumen-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 108px;
+  height: 20px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Pista (Chromium / Edge / Safari) */
+.control-volumen-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #506e90 var(--p, 70%),
+    #dbe4ec var(--p, 70%)
+  );
+}
+
+/* Pulgar (Chromium / Edge / Safari) */
+.control-volumen-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #506e90;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.control-volumen-slider::-webkit-slider-thumb:hover,
+.control-volumen-slider:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 4px rgba(80, 110, 144, 0.18);
+}
+
+/* Pista (Firefox) */
+.control-volumen-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: #dbe4ec;
+}
+
+.control-volumen-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: #506e90;
+}
+
+/* Pulgar (Firefox) */
+.control-volumen-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #506e90;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.control-volumen-slider:focus-visible {
+  outline: none;
+}
+
+/* Animación de aparición del slider de volumen */
+@keyframes aparece-volumen {
+  from {
+    opacity: 0;
+    transform: translateX(14px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* ============================================
+   Pantalla de entrada (activa el audio al tocar)
+   ============================================ */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  cursor: pointer;
+  background: radial-gradient(
+    circle at 50% 32%,
+    #fdf9f2 0%,
+    #f2e9d9 55%,
+    #e6d8bf 100%
+  );
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* Cuando el usuario toca: se desvanece y deja pasar al sitio */
+.intro-overlay.intro-salida {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: intro-aparece 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Línea de bienvenida en fuente script */
+.intro-bienvenida {
+  font-family: var(--fuente-script);
+  font-size: 26px;
+  color: #6b5d4b;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.intro-logo {
+  width: 76px;
+  height: auto;
+}
+
+/* Nombre de los novios */
+.intro-nombres {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--fuente-titulos);
+  color: #2a2a2a;
+  margin: 0;
+}
+
+.intro-nombres span {
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  line-height: 1;
+}
+
+.intro-ampersand {
+  width: 36px;
+  height: auto;
+  margin: -4px 0;
+}
+
+.intro-fecha {
+  font-family: var(--fuente-titulos);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 8px;
+  color: #4a3f31;
+  margin: 4px 0 0;
+}
+
+/* Llamado a la acción */
+.intro-pista {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--fuente-titulos);
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #6b5d4b;
+  margin: 26px 0 0;
+  animation: intro-pisto-pulso 2s ease-in-out infinite;
+}
+
+.intro-nota {
+  display: inline-block;
+  font-size: 18px;
+  animation: intro-nota-rebote 1.1s ease-in-out infinite;
+}
+
+@keyframes intro-aparece {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Pulso sutil de todo el llamado a la acción */
+@keyframes intro-pisto-pulso {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Rebote de las notas musicales */
+@keyframes intro-nota-rebote {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* Respetar la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .intro-contenido,
+  .intro-pista,
+  .intro-nota,
+  .control-volumen {
+    animation: none;
+  }
+  .intro-overlay {
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
 }

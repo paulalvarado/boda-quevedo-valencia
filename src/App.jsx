@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import './App.css';
 import Petalos from './components/Petalos.jsx';
+import Musica from './components/Musica.jsx';
 import Inicio from './sections/Inicio/Inicio.jsx';
 import NosCasamos from './sections/NosCasamos/NosCasamos.jsx';
 import NuestraHistoria from './sections/NuestraHistoria/NuestraHistoria.jsx';
@@ -80,6 +81,7 @@ function App() {
 	return (
 		<>
 			<Petalos />
+			<Musica />
 			<div
 				className="app-container"
 				ref={contenedorRef}>
