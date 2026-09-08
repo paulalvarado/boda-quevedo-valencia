@@ -18,10 +18,15 @@ export function FechaInvitacion({ fontSize }) {
 
 /* Subcomponente contenedor: título + textos, todo centrado */
 function NosCasamosContenido({ top, left, tituloSize, textoSize, fechaSize }) {
+  const interroganteStyle = {
+    position: 'absolute',
+    left: '-7px',
+    top: '20px',
+  };
   return (
     <div className="nos-casamos-contenido" style={{ top, left }}>
       <h2 className="nos-casamos-titulo" style={{ fontSize: tituloSize }}>
-        ¡Nos casamos!
+        <span style={interroganteStyle}>¡</span>Nos casamos!
       </h2>
       <TextoInvitacion fontSize={textoSize} />
       <FechaInvitacion fontSize={fechaSize} />

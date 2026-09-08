@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import './App.css';
+import Petalos from './components/Petalos.jsx';
 import Inicio from './sections/Inicio/Inicio.jsx';
 import NosCasamos from './sections/NosCasamos/NosCasamos.jsx';
 import NuestraHistoria from './sections/NuestraHistoria/NuestraHistoria.jsx';
@@ -43,6 +44,25 @@ function App() {
 		return () => window.removeEventListener('resize', ajustarEscala);
 	}, []);
 
+	// Animación de entrada (fade-up): cuando una sección entra en pantalla
+	// se le añade la clase que activa el fade desde abajo.
+	useEffect(() => {
+		const secciones = document.querySelectorAll('main section');
+		const observador = new IntersectionObserver(
+			(entradas) => {
+				entradas.forEach((entrada) => {
+					if (entrada.isIntersecting) {
+						entrada.target.classList.add('animacion-entrada-activa');
+						observador.unobserve(entrada.target);
+					}
+				});
+			},
+			{ threshold: 0.15 }
+		);
+		secciones.forEach((seccion) => observador.observe(seccion));
+		return () => observador.disconnect();
+	}, []);
+
 	const imgLeftStyle = {
 		position: 'absolute',
 		bottom: '0',
@@ -58,9 +78,11 @@ function App() {
 	};
 
 	return (
-		<div
-			className="app-container"
-			ref={contenedorRef}>
+		<>
+			<Petalos />
+			<div
+				className="app-container"
+				ref={contenedorRef}>
 			<main>
 				<Inicio
 					zIndex={2}
@@ -150,7 +172,8 @@ function App() {
 					{/* Las siguientes secciones irán dentro de este layout */}
 				</div>
 			</main>
-		</div>
+			</div>
+		</>
 	);
 }
 
