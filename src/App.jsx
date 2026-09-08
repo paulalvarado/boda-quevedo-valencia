@@ -9,6 +9,10 @@ import DressCode from './sections/DressCode/DressCode.jsx';
 import MuestrasDeCarino from './sections/MuestrasDeCarino/MuestrasDeCarino.jsx';
 import fondoComun from './assets/5_detalles_del_evento/FONDO.png';
 import Espacios from './sections/Espacios/Espacios.jsx';
+import Confirmacion from './sections/Confirmacion/Confirmacion.jsx';
+import Versiculo from './sections/Versiculo/Versiculo.jsx';
+import imgRight from './assets/11_te_esperamos/teEsperamosRight.png';
+import imgLeft from './assets/11_te_esperamos/teEsperamosLeft.png';
 
 const ANCHO_MOVIL = 430;
 
@@ -38,6 +42,20 @@ function App() {
 		window.addEventListener('resize', ajustarEscala);
 		return () => window.removeEventListener('resize', ajustarEscala);
 	}, []);
+
+	const imgLeftStyle = {
+		position: 'absolute',
+		bottom: '0',
+		left: '0',
+		width: '130px',
+	};
+
+	const imgRightStyle = {
+		position: 'absolute',
+		bottom: '0',
+		right: '0',
+		width: '100px',
+	};
 
 	return (
 		<div
@@ -106,6 +124,27 @@ function App() {
 						zIndex={1}
 						marginTop="10px"
 						marginBottom="0"
+					/>
+					<Confirmacion
+						zIndex={1}
+						marginTop="10px"
+						marginBottom="0"
+					/>
+					<Versiculo
+						zIndex={1}
+						marginTop="10px"
+						marginBottom="0"
+					/>
+
+					<img
+						style={imgLeftStyle}
+						src={imgLeft}
+						alt="Flor izquierda"
+					/>
+					<img
+						style={imgRightStyle}
+						src={imgRight}
+						alt="Flor derecha"
 					/>
 
 					{/* Las siguientes secciones irán dentro de este layout */}
