@@ -1173,8 +1173,8 @@ main section.animacion-entrada-activa {
   background: radial-gradient(
     circle at 50% 32%,
     #fdf9f2 0%,
-    #f2e9d9 55%,
-    #e6d8bf 100%
+    #d9e8f2 55%,
+    #bfd1e6 100%
   );
   transition: opacity 0.8s ease, visibility 0.8s ease;
 }
@@ -1198,7 +1198,7 @@ main section.animacion-entrada-activa {
 .intro-bienvenida {
   font-family: var(--fuente-script);
   font-size: 26px;
-  color: #6b5d4b;
+  color: #0e3b58;
   margin: 0;
   line-height: 1.2;
 }
@@ -1213,7 +1213,7 @@ main section.animacion-entrada-activa {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0px;
   font-family: var(--fuente-titulos);
   color: #2a2a2a;
   margin: 0;
@@ -1236,7 +1236,7 @@ main section.animacion-entrada-activa {
   font-family: var(--fuente-titulos);
   font-size: 20px;
   font-weight: 500;
-  letter-spacing: 8px;
+  letter-spacing: 1px;
   color: #4a3f31;
   margin: 4px 0 0;
 }
@@ -1249,7 +1249,7 @@ main section.animacion-entrada-activa {
   font-family: var(--fuente-titulos);
   font-size: 15px;
   letter-spacing: 1px;
-  color: #6b5d4b;
+  color: #1c488a;
   margin: 26px 0 0;
   animation: intro-pisto-pulso 2s ease-in-out infinite;
 }

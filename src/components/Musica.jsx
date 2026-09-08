@@ -89,7 +89,7 @@ function Musica() {
 							<img className="intro-ampersand" src={ySvg} alt="Y" />
 							<span>DANIEL</span>
 						</h1>
-						<p className="intro-fecha">24 . 10 . 26</p>
+						<p className="intro-fecha">24.10.26</p>
 
 						<p className="intro-pista">
 							<span className="intro-nota" aria-hidden="true">♪</span>
