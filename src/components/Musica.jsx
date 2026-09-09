@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import musica from '../assets/music/Ed Sheeran - Thinking out Loud (Lyrics).mp3';
 import logoImg from '../assets/1_inicio_sobre/Vector Smart Object.png';
 import ySvg from '../assets/&.svg';
+import inicioIMg from '../assets/1_inicio_sobre/INICIO.png';
 
 function Musica() {
 	const audioRef = useRef(null);
@@ -63,6 +64,12 @@ function Musica() {
 		}
 	};
 
+    const styleImgIncio = {
+		width: '100%',
+		height: 'auto',
+        maxWidth: '400px',
+	};
+
 	return (
 		<>
 			<audio ref={audioRef} src={musica} loop preload="auto" />
@@ -81,22 +88,7 @@ function Musica() {
 						}
 					}}
 				>
-					<div className="intro-contenido">
-						<p className="intro-bienvenida">Tenemos el placer de invitarte a</p>
-						<img className="intro-logo" src={logoImg} alt="Monograma Andrea & Daniel" />
-						<h1 className="intro-nombres">
-							<span>ANDREA</span>
-							<img className="intro-ampersand" src={ySvg} alt="Y" />
-							<span>DANIEL</span>
-						</h1>
-						<p className="intro-fecha">24.10.26</p>
-
-						<p className="intro-pista">
-							<span className="intro-nota" aria-hidden="true">♪</span>
-							Toca para abrir la invitación
-							<span className="intro-nota" aria-hidden="true">♪</span>
-						</p>
-					</div>
+					<img src={inicioIMg} alt="Inicio" style={styleImgIncio} />
 				</div>
 			)}
 
