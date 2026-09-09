@@ -12,7 +12,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = parseInt(process.env.PORT || '3000', 10);
+const PORT = parseInt(process.env.PORT || (process.env.NODE_ENV === 'production' ? '80' : '3000'), 10);
+const ALT_PORT = PORT === 80 ? 3000 : 80;
 
 app.use(cors());
 app.use(express.json());
@@ -52,6 +53,32 @@ if (fs.existsSync(distPath)) {
 
 // Inicialización con reintentos para soportar Docker Compose mientras MySQL levanta
 async function startServer() {
+  // Iniciar servidores HTTP de inmediato en puerto primario y alternativo (80 y 3000)
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n======================================================`);
+    console.log(`🚀 Servidor Boda Quevedo Valencia listo en puerto ${PORT}`);
+    console.log(`   - API:      http://localhost:${PORT}/api/health`);
+    console.log(`   - Admin:    http://localhost:${PORT}/admin`);
+    console.log(`======================================================\n`);
+  });
+  server.on('error', (err) => {
+    console.error(`[Server] Error en puerto principal ${PORT}:`, err.message);
+  });
+
+  // También escuchar en puerto alternativo (80 / 3000) para compatibilidad total con Dokploy/Traefik
+  if (ALT_PORT !== PORT) {
+    try {
+      const altServer = app.listen(ALT_PORT, '0.0.0.0', () => {
+        console.log(`🚀 Servidor también escuchando en puerto secundario ${ALT_PORT}`);
+      });
+      altServer.on('error', () => {
+        // Silencioso en caso de que el puerto secundario esté en uso localmente
+      });
+    } catch {
+      // Ignorar si no se puede enlazar
+    }
+  }
+
   const maxRetries = 10;
   let attempt = 1;
 
@@ -71,14 +98,6 @@ async function startServer() {
       attempt++;
     }
   }
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`\n======================================================`);
-    console.log(`🚀 Servidor Boda Quevedo Valencia listo en puerto ${PORT}`);
-    console.log(`   - API:      http://localhost:${PORT}/api/health`);
-    console.log(`   - Admin:    http://localhost:${PORT}/admin`);
-    console.log(`======================================================\n`);
-  });
 }
 
 startServer();

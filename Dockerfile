@@ -27,7 +27,7 @@ WORKDIR /app
 # Variables de entorno por defecto integradas directamente en la imagen
 # para garantizar funcionamiento inmediato en Dokploy sin depender de .env
 ENV NODE_ENV=production \
-    PORT=3000 \
+    PORT=80 \
     DB_HOST=boda-quevedo-valencia-db-coxv4h \
     DB_PORT=3306 \
     DB_USER=boda-quevedo-valencia-user \
@@ -47,7 +47,8 @@ COPY server/ server/
 # Copiar el frontend compilado desde la etapa de compilación
 COPY --from=frontend-builder /app/dist ./dist
 
-# Puerto donde escucha la aplicación Express
+# Puertos donde escucha la aplicación Express
+EXPOSE 80
 EXPOSE 3000
 
 # Iniciar servidor Express (maneja tanto la API /api/* como el frontend SPA)
