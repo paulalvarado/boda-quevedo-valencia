@@ -18,10 +18,13 @@ const ALT_PORT = PORT === 80 ? 3000 : 80;
 app.use(cors());
 app.use(express.json());
 
-// Logging simple para peticiones de API
+// Logging simple para peticiones de API (evitando saturar logs con el sondeo de 2s)
 app.use((req, res, next) => {
   if (req.path.startsWith('/api')) {
-    console.log(`[API] ${req.method} ${req.path}`);
+    const isPolling = req.method === 'GET' && (req.path === '/api/invitaciones' || req.path === '/api/config');
+    if (!isPolling) {
+      console.log(`[API] ${req.method} ${req.path}`);
+    }
   }
   next();
 });

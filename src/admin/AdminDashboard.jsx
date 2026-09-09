@@ -145,10 +145,14 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
     setTimeout(checkScrollState, 350);
   };
 
-  // Cargar métricas y listado de invitaciones
-  const cargarDatos = async () => {
+  const isFetchingRef = useRef(false);
+
+  // Cargar métricas y listado de invitaciones (con soporte para sondeo silencioso en tiempo real)
+  const cargarDatos = async (silent = false) => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       const [resConfig, resInvs] = await Promise.all([
         fetch('/api/config', {
           headers: { Authorization: `Bearer ${token}` },
@@ -157,6 +161,11 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
+
+      if (resConfig.status === 401 || resInvs.status === 401) {
+        if (onLogout) onLogout();
+        return;
+      }
 
       if (resConfig.ok) {
         const dataConfig = await resConfig.json();
@@ -168,15 +177,26 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
         setInvitaciones(dataInvs.invitaciones || []);
       }
     } catch (err) {
-      console.error('Error al cargar datos:', err);
-      showToast('Error al conectar con el servidor', 'error');
+      if (!silent) {
+        console.error('Error al cargar datos:', err);
+        showToast('Error al conectar con el servidor', 'error');
+      }
     } finally {
-      setLoading(false);
+      isFetchingRef.current = false;
+      if (!silent) setLoading(false);
     }
   };
 
   useEffect(() => {
-    cargarDatos();
+    // Carga inicial de datos
+    cargarDatos(false);
+
+    // Sondeo continuo cada 2 segundos para reflejar cambios en tiempo real
+    const interval = setInterval(() => {
+      cargarDatos(true);
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, []);
 
   // Iniciar la guía interactiva automáticamente la primera vez que visita el panel admin
@@ -302,6 +322,10 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
         <div className="admin-navbar-inner">
           <div className="admin-brand" id="tour-brand">
             <span className="admin-brand-title">Admin</span>
+            <div className="admin-live-badge" title="Sincronización en tiempo real activa (actualiza cada 2 segundos)">
+              <span className="live-dot" />
+              <span className="live-text">En vivo</span>
+            </div>
           </div>
 
           <div className="admin-nav-actions">
