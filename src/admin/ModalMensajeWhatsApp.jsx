@@ -115,21 +115,26 @@ export default function ModalMensajeWhatsApp({
     }
   };
 
-  // Renderizar contenido con variables resaltadas en verde en el fondo del editor
+  // Renderizar contenido con variables resaltadas en verde en el fondo del editor (sin desfase de píxeles)
   const renderHighlightedContent = (text) => {
     if (!text) return null;
     const parts = text.split(/({familia}|{asientos}|{enlace}|{codigo})/g);
-    return parts.map((part, idx) => {
-      const isTag = ['{familia}', '{asientos}', '{enlace}', '{codigo}'].includes(part);
-      if (isTag) {
-        return (
-          <mark key={idx} className="smart-highlight-tag">
-            {part}
-          </mark>
-        );
-      }
-      return <span key={idx}>{part}</span>;
-    });
+    return (
+      <>
+        {parts.map((part, idx) => {
+          const isTag = ['{familia}', '{asientos}', '{enlace}', '{codigo}'].includes(part);
+          if (isTag) {
+            return (
+              <span key={idx} className="smart-highlight-tag">
+                {part}
+              </span>
+            );
+          }
+          return <span key={idx}>{part}</span>;
+        })}
+        {text.endsWith('\n') && '\n '}
+      </>
+    );
   };
 
   // Obtener datos de ejemplo para la simulación en tiempo real

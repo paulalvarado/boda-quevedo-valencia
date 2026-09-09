@@ -1257,27 +1257,35 @@
   position: absolute;
   inset: 0;
   padding: 0.75rem 0.85rem;
-  font-family: inherit;
-  font-size: 0.86rem;
-  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0;
+  word-spacing: 0;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: break-word;
   overflow: hidden;
   pointer-events: none;
-  color: transparent;
+  color: #f4f4f5;
   box-sizing: border-box;
   user-select: none;
 }
 
 .smart-highlight-tag {
-  background-color: rgba(16, 185, 129, 0.32);
   color: #34d399 !important;
-  border: 1px solid rgba(16, 185, 129, 0.7);
-  border-radius: 4px;
-  font-weight: 700;
-  padding: 1px 4px;
-  box-shadow: 0 0 8px rgba(16, 185, 129, 0.35);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  letter-spacing: inherit;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background-color: rgba(16, 185, 129, 0.25);
+  border-radius: 3px;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.55);
+  text-shadow: 0 0 6px rgba(52, 211, 153, 0.4);
 }
 
 .smart-textarea-input {
@@ -1288,11 +1296,15 @@
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: #f4f4f5 !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
   caret-color: #34d399 !important;
-  font-family: inherit;
-  font-size: 0.86rem;
-  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: 0;
+  word-spacing: 0;
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: break-word;
@@ -1300,6 +1312,12 @@
   box-sizing: border-box;
   resize: vertical;
   outline: none !important;
+}
+
+.smart-textarea-input::selection {
+  background-color: rgba(16, 185, 129, 0.35) !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 /* ── Barra de Estado de Variables Activas ── */
