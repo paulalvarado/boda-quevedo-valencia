@@ -42,7 +42,7 @@ function DetallesDelEvento({ zIndex, marginTop, marginBottom }) {
                     {/* {Google Maps} */}
                     <a href="https://www.google.com/maps/place/Cielo+Abierto/@13.6164551,-89.1836676,1026m/data=!3m2!1e3!4b1!4m6!3m5!1s0x8f6333ec15b7be99:0x611887bff381088d!8m2!3d13.6164551!4d-89.1836676!16s%2Fg%2F11byvqtc42?entry=ttu&g_ep=EgoyMDI2MDkwMi4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">Google Maps</a>
                     {/* {Waze} */}
-                    <a href="https://www.waze.com/es/live-map/directions/cielo-abierto-rn-6-carretera-a-panchimalco?to=place.w.177471624.1774847314.6913731" target="_blank" rel="noopener noreferrer">Waze</a>
+                    <a href="https://ul.waze.com/ul?venue_id=177471624.1774847314.6913731&overview=yes&utm_campaign=default&utm_source=waze_website&utm_medium=lm_share_location" target="_blank" rel="noopener noreferrer">Waze</a>
                 </div>
                 <img className="detalles-rosa-bl-1" src={rosaBLImg1} alt="Rosa azul" />
                 <img className="detalles-rosa-bl-2" src={rosaBLImg2} alt="Rosa azul" />
