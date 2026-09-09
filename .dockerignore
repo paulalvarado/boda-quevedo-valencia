@@ -12,7 +12,6 @@ public/build/
 # Entorno (se inyecta en runtime, nunca en la imagen)
 .env
 .env.*
-!.env.example
 
 # Git / CI
 .git/

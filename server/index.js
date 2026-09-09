@@ -1,0 +1,84 @@
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { initDb } from './db.js';
+import authRoutes from './routes/auth.js';
+import invitacionesRoutes from './routes/invitaciones.js';
+import configRoutes from './routes/config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const app = express();
+const PORT = parseInt(process.env.PORT || '3000', 10);
+
+app.use(cors());
+app.use(express.json());
+
+// Logging simple para peticiones de API
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    console.log(`[API] ${req.method} ${req.path}`);
+  }
+  next();
+});
+
+// Rutas de API
+app.use('/api/auth', authRoutes);
+app.use('/api/invitaciones', invitacionesRoutes);
+app.use('/api/config', configRoutes);
+
+// Endpoint de salud
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Servir frontend compilado en producción (dist)
+const distPath = path.resolve(__dirname, '../dist');
+if (fs.existsSync(distPath)) {
+  console.log(`[Static] Sirviendo archivos estáticos desde: ${distPath}`);
+  app.use(express.static(distPath));
+
+  // SPA fallback para rutas no-API (ej: /admin)
+  app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api')) {
+      return res.sendFile(path.join(distPath, 'index.html'));
+    }
+    next();
+  });
+}
+
+// Inicialización con reintentos para soportar Docker Compose mientras MySQL levanta
+async function startServer() {
+  const maxRetries = 10;
+  let attempt = 1;
+
+  while (attempt <= maxRetries) {
+    try {
+      console.log(`[Init] Intentando conectar con base de datos (intento ${attempt}/${maxRetries})...`);
+      await initDb();
+      break;
+    } catch (error) {
+      console.error(`[Init] Intento ${attempt} fallido: ${error.message}`);
+      if (attempt === maxRetries) {
+        console.error('[Init] No se pudo conectar a MySQL tras varios intentos. El servidor continuará intentando pero las peticiones a la DB fallarán.');
+      } else {
+        console.log('[Init] Esperando 3 segundos antes de reintentar...');
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+      attempt++;
+    }
+  }
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n======================================================`);
+    console.log(`🚀 Servidor Boda Quevedo Valencia listo en puerto ${PORT}`);
+    console.log(`   - API:      http://localhost:${PORT}/api/health`);
+    console.log(`   - Admin:    http://localhost:${PORT}/admin`);
+    console.log(`======================================================\n`);
+  });
+}
+
+startServer();

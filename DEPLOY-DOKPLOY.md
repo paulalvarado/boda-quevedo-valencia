@@ -1,79 +1,103 @@
-# Despliegue en Dokploy — Boda Quevedo Valencia
+# Despliegue en Dokploy — Boda Quevedo Valencia (Monorepo Express + MySQL + React)
 
-Invitación digital de boda (SPA Vite + React 19, npm). Publicada desde el repo
-`paulalvarado/boda-quevedo-valencia` (rama `main`).
+Este proyecto es un **monorepo completo** que incluye:
+- **Frontend**: React 19 + Vite (compilado en el contenedor).
+- **Backend API**: Node.js + Express.js (`/api/...`).
+- **Base de Datos**: MySQL 8.0 (con migraciones automáticas).
+- **Despliegue unificado**: Express sirve tanto la API como la aplicación React compilada (`dist`).
 
-## ✅ Ya está listo (automatizado)
+---
 
-| Archivo | Propósito |
-|---|---|
-| `Dockerfile` | Build multi-stage: `node:22-alpine` (npm ci + vite build) → `nginx:1.27-alpine` |
-| `nginx.conf` | SPA fallback (`try_files ... /index.html`) + cache inmutable de `/assets/` |
-| `.dockerignore` | Excluye `node_modules/`, `dist/`, `.env`, `.git/`, etc. del contexto |
-| Push a GitHub | Commit `5308414` en `main` (validado: `npm run build` ✅ y `docker build` ✅) |
+## 💡 ¿Por qué no se necesitan variables de entorno para React en Dokploy?
 
-## 📋 Pasos restantes (acción manual del usuario)
+En proyectos anteriores con React / Vite puros, las variables de entorno (`VITE_*`) a menudo no funcionaban en Dokploy porque Vite las compila en **tiempo de construcción** (build-time). Cuando Dokploy inyecta variables al contenedor en tiempo de ejecución, los archivos JavaScript estáticos ya fueron compilados y no las leen.
 
-> Opción A — con el MCP habilitado (recomendada si quieres que el agente lo haga):
-> 1. En VS Code → MCP → habilita `project-create`, `application-create`, `application-update`,
->    `application-saveBuildType`, `application-saveGithubProvider`, `application-updateTraefikConfig`,
->    `application-deploy`, `application-readLogs`, `deployment-all`, `application-one`.
-> 2. Dile al agente: **"continúa el despliegue de la boda en Dokploy"**.
+**En esta arquitectura:**
+1. **Rutas relativas**: El frontend de React se comunica con la API mediante rutas relativas (`/api/auth/...`, `/api/invitaciones/...`). Como Express sirve el frontend y la API desde el mismo origen, **React no necesita ninguna variable de entorno ni en local ni en Dokploy**.
+2. **Runtime de Node.js**: Express corre en tiempo de ejecución del servidor (exactamente como PHP en CI4), leyendo las variables `process.env` dinámicamente.
+3. **Valores por defecto en el Dockerfile**: El `Dockerfile` ya incluye valores predeterminados seguros (`DB_HOST=db`, `PORT=3000`, credenciales por defecto). La aplicación arrancará y funcionará de inmediato sin necesidad de ingresar variables manualmente en Dokploy si se usa Docker Compose.
 
-### Opción B — Manual por la UI de Dokploy
+---
 
-1. **Proyecto**: New Project → nombre `BODA QUEVEDO VALENCIA`.
-2. **Aplicación**: New Application → fuente **GitHub**:
-   - Repo: `paulalvarado/boda-quevedo-valencia`, rama `main`.
-   - Build: **Dockerfile** → `./Dockerfile`, Context `.`.
-   - Auto-deploy: ON (cada push a `main` redespliega).
-3. **Dominio** (pestaña Domains):
-   - Host: `boda-quevedo-valencia.paulperez.dev`
-   - Container Port: **80** (Nginx escucha en 80).
-   - HTTPS: ON (Let's Encrypt).
-4. **DNS** (proveedor del dominio): registro **A** de `boda-quevedo-valencia.paulperez.dev`
-   → IP pública del servidor Dokploy.
-5. **Deploy** → esperar build → verificar que el contenedor queda `running`/`healthy`.
-6. **Verificar**: abrir `https://boda-quevedo-valencia.paulperez.dev` (debe responder 200 con HTTPS).
+## 🚀 Opción A: Despliegue en Dokploy con Docker Compose (Recomendada)
 
-> No necesita variables de entorno: es una SPA estática sin API (no hay `VITE_*` en el código).
+Permite levantar la aplicación y la base de datos MySQL 8.0 de forma automática y con volumen persistente.
 
-## 🔧 YAML de Traefik (si se configura por API en vez de la pestaña Domains)
+1. **Crear Proyecto**: En Dokploy → *New Project* → Nombre: `Boda Quevedo Valencia`.
+2. **Crear Servicio Compose**:
+   - En el proyecto, clic en *Create Service* → Seleccionar **Compose**.
+   - Nombre: `boda-stack`.
+3. **Origen del Código (Source)**:
+   - Proveedor: **GitHub**.
+   - Repositorio: `paulalvarado/boda-quevedo-valencia`.
+   - Rama: `main`.
+   - Compose Path: `./docker-compose.yml`.
+4. **Dominio**:
+   - Ir a la pestaña **Domains**.
+   - Host: `boda-quevedo-valencia.paulperez.dev` (o tu dominio deseado).
+   - Service: Seleccionar el servicio `app`.
+   - Container Port: **3000** (puerto en el que corre Express).
+   - HTTPS: Activar Let's Encrypt (Automático).
+5. **Deploy**:
+   - Clic en **Deploy**. Dokploy levantará `db` (MySQL) y `app` (Node + React).
+   - Las tablas de la base de datos y el administrador por defecto se crean automáticamente.
 
-> ⚠️ Usar **o** la pestaña Domains **o** este YAML — nunca ambos (routers duplicados).
-> Reemplazar `<SUFIJO>` por el sufijo real del `appName` (consultar en `application-one`).
+---
 
-```yaml
-http:
-  routers:
-    boda-quevedo-valencia-<SUFIJO>-router-1:
-      rule: Host(`boda-quevedo-valencia.paulperez.dev`)
-      service: boda-quevedo-valencia-<SUFIJO>-service-1
-      middlewares:
-        - redirect-to-https
-      entryPoints:
-        - web
-    boda-quevedo-valencia-<SUFIJO>-router-websecure-1:
-      rule: Host(`boda-quevedo-valencia.paulperez.dev`)
-      service: boda-quevedo-valencia-<SUFIJO>-service-1
-      middlewares: []
-      entryPoints:
-        - websecure
-      tls:
-        certResolver: letsencrypt
-  services:
-    boda-quevedo-valencia-<SUFIJO>-service-1:
-      loadBalancer:
-        servers:
-          - url: http://boda-quevedo-valencia-<SUFIJO>:80
-        passHostHeader: true
+## 🛠️ Opción B: Despliegue como Application (Dockerfile)
+
+Si prefieres usar una base de datos MySQL administrada por separado en Dokploy:
+
+1. **Crear Servicio Application**:
+   - Tipo: **Application**.
+   - Origen: GitHub (`paulalvarado/boda-quevedo-valencia`, rama `main`).
+   - Build Type: **Dockerfile** (Ruta: `./Dockerfile`, Context: `.`).
+2. **Variables de Entorno (Pestaña Environment de Dokploy)**:
+   Si usas una base de datos externa de Dokploy, define:
+   ```env
+   NODE_ENV=production
+   PORT=3000
+   DB_HOST=mysql-dokploy-host
+   DB_PORT=3306
+   DB_USER=boda_user
+   DB_PASSWORD=tu_password_mysql
+   DB_NAME=boda_db
+   JWT_SECRET=tu_secreto_jwt_aleatorio
+   ```
+3. **Dominio**:
+   - Host: `boda-quevedo-valencia.paulperez.dev`.
+   - Container Port: **3000**.
+   - HTTPS: Activo.
+
+---
+
+## 🔑 Credenciales por Defecto del Administrador
+
+- **URL de acceso al panel**: `https://tu-dominio.dev/admin`
+- **Usuario**: `admin`
+- **Contraseña inicial**: `boda2026`
+*(El administrador puede cambiar su contraseña desde el panel en cualquier momento).*
+
+---
+
+## 💻 Desarrollo Local
+
+Para correr todo localmente:
+
+```bash
+# 1. Levantar base de datos MySQL
+docker compose up -d db
+
+# 2. Iniciar servidor Express (escucha en puerto 3000)
+npm run dev:server
+
+# 3. En otra terminal, iniciar Vite frontend (puerto 5173, con proxy automático a /api)
+npm run dev
 ```
-
-## 🚨 Troubleshooting
-
-| Síntoma | Solución |
-|---|---|
-| 502 en el dominio | Container Port ≠ 80 (Nginx escucha en 80) |
-| Dominio no resuelve | Falta registro A → IP del servidor en el DNS |
-| SPA da 404 en rutas internas | Ya cubierto por el `try_files` de `nginx.conf` |
-| Certificado no aparece | Esperar Let's Encrypt; DNS debe apuntar al servidor |
+O simplemente compilar y correr todo el stack completo en Docker:
+```bash
+docker compose up -d --build
+```
+Acceder a:
+- Invitación pública: `http://localhost:3000`
+- Panel de Administración: `http://localhost:3000/admin`

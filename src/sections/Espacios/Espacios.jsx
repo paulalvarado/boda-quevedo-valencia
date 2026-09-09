@@ -24,7 +24,9 @@ export function FloresButtomRight() {
 	);
 }
 
-export default function Espacios({ zIndex, marginTop, marginBottom }) {
+export default function Espacios({ zIndex, marginTop, marginBottom, invitacion }) {
+	const asientos = invitacion ? parseInt(invitacion.numero_asientos, 10) : 1;
+
 	return (
 		<section
 			id="espacios"
@@ -40,9 +42,9 @@ export default function Espacios({ zIndex, marginTop, marginBottom }) {
 				<span className="espacios-titulo-1">Tenemos</span>
 				<span className="espacios-titulo-2">RESERVADO</span>
 				<div className="espacios-numero-row">
-					<span className="espacios-numero">1</span>
+					<span className="espacios-numero">{asientos}</span>
 					<div className="espacios-numero-etiquetas">
-						<span>ESPACIO</span>
+						<span>{asientos === 1 ? 'ESPACIO' : 'ESPACIOS'}</span>
 						<span>PARATI</span>
 					</div>
 				</div>

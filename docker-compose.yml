@@ -1,0 +1,63 @@
+services:
+  # ---------------------------------------------------------------
+  # Servicio de Aplicación (API Express + Frontend React SPA)
+  # ---------------------------------------------------------------
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: boda_app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=boda_user
+      - DB_PASSWORD=boda_password_2026
+      - DB_NAME=boda_db
+      - JWT_SECRET=boda_jwt_secret_super_seguro_2026
+      - ADMIN_DEFAULT_USER=admin
+      - ADMIN_DEFAULT_PASSWORD=boda2026
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - boda_network
+
+  # ---------------------------------------------------------------
+  # Servicio de Base de Datos MySQL 8.0
+  # ---------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: boda_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 2026RootPass
+      MYSQL_DATABASE: boda_db
+      MYSQL_USER: boda_user
+      MYSQL_PASSWORD: boda_password_2026
+    ports:
+      - "${DB_HOST_PORT:-3307}:3306"
+    volumes:
+      - boda_mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p2026RootPass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - boda_network
+
+volumes:
+  boda_mysql_data:
+    name: boda_mysql_data
+
+networks:
+  boda_network:
+    name: boda_network
+    driver: bridge
