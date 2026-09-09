@@ -37,7 +37,7 @@ function MuestrasDeCarino({ zIndex, marginTop, marginBottom }) {
 						<span className="muestras-de-carino-texto">
 							Tu presencia hará nuestro día aún más
 							<br />
-							especial. Agradecemos de tus muestras de
+							especial. Agradecemos tus muestras de
 							<br />
 							cariño con regalo de sobre.
 						</span>

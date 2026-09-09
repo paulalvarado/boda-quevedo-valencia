@@ -45,7 +45,7 @@ export default function Espacios({ zIndex, marginTop, marginBottom, invitacion }
 					<span className="espacios-numero">{asientos}</span>
 					<div className="espacios-numero-etiquetas">
 						<span>{asientos === 1 ? 'ESPACIO' : 'ESPACIOS'}</span>
-						<span>PARATI</span>
+						<span>PARA TI</span>
 					</div>
 				</div>
 			</div>
