@@ -205,8 +205,7 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
       <nav className="admin-navbar">
         <div className="admin-navbar-inner">
           <div className="admin-brand" id="tour-brand">
-            <span className="admin-brand-title">Boda Quevedo Valencia</span>
-            <span className="admin-brand-badge">{admin?.nombre || 'Admin'}</span>
+            <span className="admin-brand-title">Admin</span>
           </div>
 
           <div className="admin-nav-actions">
