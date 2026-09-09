@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Users,
   Search,
@@ -18,6 +18,8 @@ import {
   TrendingUp,
   HelpCircle,
   X,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import ModalNuevaInvitacion from './ModalNuevaInvitacion.jsx';
 import ModalCapacidad from './ModalCapacidad.jsx';
@@ -48,6 +50,100 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
   const [invitacionParaEliminar, setInvitacionParaEliminar] = useState(null);
   const [copiandoId, setCopiandoId] = useState(null);
   const [enviandoId, setEnviandoId] = useState(null);
+
+  // Deslizador interactivo (drag/slide) para las pestañas en móvil y escritorio
+  const tabsRef = useRef(null);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
+  const hasMovedRef = useRef(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const checkScrollState = () => {
+    if (!tabsRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
+    setCanScrollLeft(scrollLeft > 6);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 6);
+  };
+
+  useEffect(() => {
+    checkScrollState();
+    window.addEventListener('resize', checkScrollState);
+    return () => window.removeEventListener('resize', checkScrollState);
+  }, [invitaciones]);
+
+  const handleMouseDown = (e) => {
+    if (!tabsRef.current) return;
+    isDraggingRef.current = true;
+    hasMovedRef.current = false;
+    setIsDragging(true);
+    startXRef.current = e.pageX - tabsRef.current.offsetLeft;
+    scrollLeftRef.current = tabsRef.current.scrollLeft;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDraggingRef.current || !tabsRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - tabsRef.current.offsetLeft;
+    const walk = (x - startXRef.current) * 1.4;
+    if (Math.abs(walk) > 4) {
+      hasMovedRef.current = true;
+    }
+    tabsRef.current.scrollLeft = scrollLeftRef.current - walk;
+    checkScrollState();
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isDraggingRef.current = false;
+    setIsDragging(false);
+    checkScrollState();
+  };
+
+  const handleTouchStart = (e) => {
+    if (!tabsRef.current) return;
+    hasMovedRef.current = false;
+    startXRef.current = e.touches[0].pageX - tabsRef.current.offsetLeft;
+    scrollLeftRef.current = tabsRef.current.scrollLeft;
+  };
+
+  const handleTouchMove = (e) => {
+    if (!tabsRef.current) return;
+    const x = e.touches[0].pageX - tabsRef.current.offsetLeft;
+    const walk = (x - startXRef.current) * 1.2;
+    if (Math.abs(walk) > 4) {
+      hasMovedRef.current = true;
+    }
+    tabsRef.current.scrollLeft = scrollLeftRef.current - walk;
+    checkScrollState();
+  };
+
+  const handleTabClick = (tabKey, e) => {
+    if (hasMovedRef.current) {
+      // Evitar cambio de tab accidental durante un arrastre
+      return;
+    }
+    setSelectedTab(tabKey);
+    if (e?.currentTarget) {
+      e.currentTarget.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest',
+      });
+      setTimeout(checkScrollState, 350);
+    }
+  };
+
+  const scrollTabsDirection = (direction) => {
+    if (!tabsRef.current) return;
+    const scrollAmount = tabsRef.current.clientWidth * 0.6;
+    tabsRef.current.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth',
+    });
+    setTimeout(checkScrollState, 350);
+  };
 
   // Cargar métricas y listado de invitaciones
   const cargarDatos = async () => {
@@ -391,40 +487,77 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
             </button>
           </div>
 
-          {/* Pestañas de Filtro (Tabs Segmentadas) */}
-          <div className="tabs-container" id="tour-tabs">
-            <button
-              type="button"
-              className={`tab-trigger ${selectedTab === 'todas' ? 'active' : ''}`}
-              onClick={() => setSelectedTab('todas')}
+          {/* Pestañas de Filtro (Slider interactivo con arrastre de lado a lado) */}
+          <div className="tabs-slider-wrapper" id="tour-tabs">
+            {canScrollLeft && (
+              <button
+                type="button"
+                className="tabs-nav-btn tabs-nav-prev"
+                onClick={() => scrollTabsDirection('left')}
+                title="Deslizar a la izquierda"
+                aria-label="Deslizar a la izquierda"
+              >
+                <ChevronLeft size={16} />
+              </button>
+            )}
+
+            <div
+              ref={tabsRef}
+              className={`tabs-container ${isDragging ? 'is-dragging' : ''}`}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUpOrLeave}
+              onMouseLeave={handleMouseUpOrLeave}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleMouseUpOrLeave}
+              onScroll={checkScrollState}
             >
-              <span className="tab-label">Todas</span>
-              <span className="tab-count">{counts.todas}</span>
-            </button>
-            <button
-              type="button"
-              className={`tab-trigger ${selectedTab === 'pendiente' ? 'active' : ''}`}
-              onClick={() => setSelectedTab('pendiente')}
-            >
-              <span className="tab-label">Pendientes</span>
-              <span className="tab-count badge-count-pendiente">{counts.pendiente}</span>
-            </button>
-            <button
-              type="button"
-              className={`tab-trigger ${selectedTab === 'enviada' ? 'active' : ''}`}
-              onClick={() => setSelectedTab('enviada')}
-            >
-              <span className="tab-label">Enviadas</span>
-              <span className="tab-count badge-count-enviada">{counts.enviada}</span>
-            </button>
-            <button
-              type="button"
-              className={`tab-trigger ${selectedTab === 'confirmada' ? 'active' : ''}`}
-              onClick={() => setSelectedTab('confirmada')}
-            >
-              <span className="tab-label">Confirmadas</span>
-              <span className="tab-count badge-count-confirmada">{counts.confirmada}</span>
-            </button>
+              <button
+                type="button"
+                className={`tab-trigger ${selectedTab === 'todas' ? 'active' : ''}`}
+                onClick={(e) => handleTabClick('todas', e)}
+              >
+                <span className="tab-label">Todas</span>
+                <span className="tab-count">{counts.todas}</span>
+              </button>
+              <button
+                type="button"
+                className={`tab-trigger ${selectedTab === 'pendiente' ? 'active' : ''}`}
+                onClick={(e) => handleTabClick('pendiente', e)}
+              >
+                <span className="tab-label">Pendientes</span>
+                <span className="tab-count badge-count-pendiente">{counts.pendiente}</span>
+              </button>
+              <button
+                type="button"
+                className={`tab-trigger ${selectedTab === 'enviada' ? 'active' : ''}`}
+                onClick={(e) => handleTabClick('enviada', e)}
+              >
+                <span className="tab-label">Enviadas</span>
+                <span className="tab-count badge-count-enviada">{counts.enviada}</span>
+              </button>
+              <button
+                type="button"
+                className={`tab-trigger ${selectedTab === 'confirmada' ? 'active' : ''}`}
+                onClick={(e) => handleTabClick('confirmada', e)}
+              >
+                <span className="tab-label">Confirmadas</span>
+                <span className="tab-count badge-count-confirmada">{counts.confirmada}</span>
+              </button>
+            </div>
+
+            {canScrollRight && (
+              <button
+                type="button"
+                className="tabs-nav-btn tabs-nav-next"
+                onClick={() => scrollTabsDirection('right')}
+                title="Deslizar a la derecha"
+                aria-label="Deslizar a la derecha"
+              >
+                <ChevronRight size={16} />
+              </button>
+            )}
           </div>
         </div>
 
