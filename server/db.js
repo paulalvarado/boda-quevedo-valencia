@@ -57,9 +57,16 @@ export async function initDb() {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS configuracion (
         clave VARCHAR(50) PRIMARY KEY,
-        valor VARCHAR(255) NOT NULL
+        valor TEXT NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
+
+    // Asegurar que la columna valor sea de tipo TEXT para mensajes largos
+    try {
+      await pool.query(`ALTER TABLE configuracion MODIFY COLUMN valor TEXT NOT NULL;`);
+    } catch {
+      // Ignorar si ya es tipo TEXT
+    }
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS invitaciones (
@@ -81,11 +88,14 @@ export async function initDb() {
     `);
 
     // Asegurar configuración por defecto
+    const defaultMensaje = '¡Hola {familia}! 💍✨ Nos hace una inmensa ilusión compartir con ustedes el día de nuestra boda. Tienen reservado(s) {asientos} espacio(s). Por favor vean todos los detalles y confirmen su asistencia en el siguiente enlace:\n\n{enlace}';
+
     await pool.query(`
       INSERT IGNORE INTO configuracion (clave, valor) VALUES 
       ('total_asientos_evento', '150'),
-      ('nombre_evento', 'Boda Quevedo Valencia');
-    `);
+      ('nombre_evento', 'Boda Quevedo Valencia'),
+      ('mensaje_whatsapp', ?);
+    `, [defaultMensaje]);
 
     // Asegurar administrador inicial
     const adminUser = process.env.ADMIN_DEFAULT_USER || 'admin';

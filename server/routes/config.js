@@ -39,6 +39,12 @@ router.get('/', async (req, res) => {
     const asientosConfirmados = parseInt(stats.asientos_confirmados, 10);
     const asientosDisponibles = Math.max(0, totalAsientosEvento - asientosAsignados);
 
+    const defaultMensaje = '¡Hola {familia}! 💍✨ Nos hace una inmensa ilusión compartir con ustedes el día de nuestra boda. Tienen reservado(s) {asientos} espacio(s). Por favor vean todos los detalles y confirmen su asistencia en el siguiente enlace:\n\n{enlace}';
+
+    if (!configMap.mensaje_whatsapp) {
+      configMap.mensaje_whatsapp = defaultMensaje;
+    }
+
     return res.json({
       config: configMap,
       metrics: {
@@ -61,7 +67,7 @@ router.get('/', async (req, res) => {
 // PUT /api/config
 router.put('/', authMiddleware, async (req, res) => {
   try {
-    const { total_asientos_evento, nombre_evento } = req.body;
+    const { total_asientos_evento, nombre_evento, mensaje_whatsapp } = req.body;
 
     if (total_asientos_evento !== undefined) {
       const asientosNum = parseInt(total_asientos_evento, 10);
@@ -79,6 +85,18 @@ router.put('/', authMiddleware, async (req, res) => {
       await pool.query(
         'INSERT INTO configuracion (clave, valor) VALUES (?, ?) ON DUPLICATE KEY UPDATE valor = ?',
         ['nombre_evento', String(nombre_evento), String(nombre_evento)]
+      );
+    }
+
+    if (mensaje_whatsapp !== undefined) {
+      const cleanMsg = String(mensaje_whatsapp).trim();
+      if (!cleanMsg) {
+        return res.status(400).json({ error: 'El mensaje de WhatsApp no puede estar vacío.' });
+      }
+
+      await pool.query(
+        'INSERT INTO configuracion (clave, valor) VALUES (?, ?) ON DUPLICATE KEY UPDATE valor = ?',
+        ['mensaje_whatsapp', cleanMsg, cleanMsg]
       );
     }
 

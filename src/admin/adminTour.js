@@ -51,6 +51,16 @@ export function iniciarGuia(forzar = false) {
       },
     },
     {
+      element: '#tour-btn-mensaje',
+      popover: {
+        title: '💬 Personalizar Mensaje de WhatsApp',
+        description:
+          'Modifica la plantilla de invitación que se enviará automáticamente. Inserta etiquetas dinámicas como <code>{familia}</code>, <code>{asientos}</code> o <code>{enlace}</code> y previsualiza en tiempo real cómo se verá en WhatsApp con su tarjeta de portada.',
+        side: 'bottom',
+        align: 'end',
+      },
+    },
+    {
       element: '#tour-btn-nueva-invitacion',
       popover: {
         title: '➕ Crear Nueva Invitación',

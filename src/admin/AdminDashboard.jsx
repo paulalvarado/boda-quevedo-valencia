@@ -20,10 +20,12 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  MessageSquare,
 } from 'lucide-react';
 import ModalNuevaInvitacion from './ModalNuevaInvitacion.jsx';
 import ModalCapacidad from './ModalCapacidad.jsx';
 import ModalCambiarPassword from './ModalCambiarPassword.jsx';
+import ModalMensajeWhatsApp from './ModalMensajeWhatsApp.jsx';
 import { iniciarGuia } from './adminTour.js';
 
 export default function AdminDashboard({ admin, token, onLogout, showToast }) {
@@ -47,9 +49,15 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
   const [invitacionParaEditar, setInvitacionParaEditar] = useState(null);
   const [modalCapacidadOpen, setModalCapacidadOpen] = useState(false);
   const [modalPasswordOpen, setModalPasswordOpen] = useState(false);
+  const [modalMensajeOpen, setModalMensajeOpen] = useState(false);
   const [invitacionParaEliminar, setInvitacionParaEliminar] = useState(null);
   const [copiandoId, setCopiandoId] = useState(null);
   const [enviandoId, setEnviandoId] = useState(null);
+  const [configData, setConfigData] = useState({
+    mensaje_whatsapp: '',
+    nombre_evento: 'Boda Quevedo Valencia',
+    total_asientos_evento: '150',
+  });
 
   // Deslizador interactivo (drag/slide) para las pestañas en móvil y escritorio
   const tabsRef = useRef(null);
@@ -170,6 +178,7 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
       if (resConfig.ok) {
         const dataConfig = await resConfig.json();
         if (dataConfig.metrics) setMetrics(dataConfig.metrics);
+        if (dataConfig.config) setConfigData(dataConfig.config);
       }
 
       if (resInvs.ok) {
@@ -363,6 +372,18 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
             >
               <Sliders size={14} />
               <span className="nav-btn-text">Capacidad</span>
+            </button>
+
+            {/* Plantilla Mensaje WhatsApp */}
+            <button
+              id="tour-btn-mensaje"
+              type="button"
+              className="btn-shadcn btn-outline btn-sm"
+              onClick={() => setModalMensajeOpen(true)}
+              title="Personalizar plantilla de mensaje de WhatsApp y vista previa"
+            >
+              <MessageSquare size={14} style={{ color: '#25D366' }} />
+              <span className="nav-btn-text">Mensaje</span>
             </button>
 
             {/* Cambiar contraseña */}
@@ -866,6 +887,17 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
         isOpen={modalCapacidadOpen}
         onClose={() => setModalCapacidadOpen(false)}
         capacidadActual={metrics.total_asientos_evento}
+        onSaved={cargarDatos}
+        token={token}
+        showToast={showToast}
+      />
+
+      {/* ── Modal Personalizar Plantilla de Mensaje WhatsApp ── */}
+      <ModalMensajeWhatsApp
+        isOpen={modalMensajeOpen}
+        onClose={() => setModalMensajeOpen(false)}
+        mensajeActual={configData.mensaje_whatsapp}
+        invitaciones={invitaciones}
         onSaved={cargarDatos}
         token={token}
         showToast={showToast}
