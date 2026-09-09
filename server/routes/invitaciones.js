@@ -26,7 +26,7 @@ function generarTokenId(nombreFamilia) {
 }
 
 function limpiarTelefono(telefono) {
-  return (telefono || '').replace(/[^\d+]/g, '');
+  return (telefono || '').replace(/\D/g, '');
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -344,16 +344,17 @@ router.post('/:id/enviar', authMiddleware, async (req, res) => {
     const host = baseUrl || req.headers.origin || `http://${req.headers.host}`;
     const urlInvitacion = `${host}/?inv=${invitacion.token_id}&codigo=${invitacion.codigo_confirmacion}`;
 
-    // Mensaje de WhatsApp
-    const textoMensaje = `¡Hola ${invitacion.nombre_familia}! ✨ Nos hace una inmensa ilusión compartir con ustedes el día de nuestra boda. Tienen reservado(s) ${invitacion.numero_asientos} espacio(s). Por favor vean todos los detalles y confirmen su asistencia en el siguiente enlace:\n\n${urlInvitacion}`;
+    // Mensaje de WhatsApp (usando api.whatsapp.com para preservar codificación UTF-8 de emojis sin el redirect corruptor de wa.me)
+    const textoMensaje = `¡Hola ${invitacion.nombre_familia}! 💍✨ Nos hace una inmensa ilusión compartir con ustedes el día de nuestra boda. Tienen reservado(s) ${invitacion.numero_asientos} espacio(s). Por favor vean todos los detalles y confirmen su asistencia en el siguiente enlace:\n\n${urlInvitacion}`;
 
     const cleanPhone = limpiarTelefono(invitacion.telefono);
-    const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(textoMensaje)}`;
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(textoMensaje)}`;
 
     return res.json({
       success: true,
       urlInvitacion,
       whatsappUrl,
+      textoMensaje,
       invitacion,
     });
   } catch (error) {
