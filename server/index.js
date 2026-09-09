@@ -42,10 +42,25 @@ if (fs.existsSync(distPath)) {
   console.log(`[Static] Sirviendo archivos estáticos desde: ${distPath}`);
   app.use(express.static(distPath));
 
-  // SPA fallback para rutas no-API (ej: /admin)
+  // SPA fallback para rutas no-API (ej: /, /admin, /?inv=...) con soporte dinámico de metadatos Open Graph
   app.use((req, res, next) => {
     if (req.method === 'GET' && !req.path.startsWith('/api')) {
-      return res.sendFile(path.join(distPath, 'index.html'));
+      const indexPath = path.join(distPath, 'index.html');
+      try {
+        let html = fs.readFileSync(indexPath, 'utf8');
+        const proto = req.headers['x-forwarded-proto'] || req.protocol || 'https';
+        const host = req.headers['x-forwarded-host'] || req.get('host');
+        if (host) {
+          const currentOrigin = `${proto}://${host}`;
+          html = html
+            .replaceAll('https://boda-quevedo-valencia.paulperez.dev/card.png', `${currentOrigin}/card.png`)
+            .replaceAll('https://boda-quevedo-valencia.paulperez.dev/', `${currentOrigin}/`);
+        }
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.send(html);
+      } catch {
+        return res.sendFile(indexPath);
+      }
     }
     next();
   });
