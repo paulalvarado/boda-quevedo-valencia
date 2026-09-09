@@ -43,7 +43,12 @@ app.get('/api/health', (req, res) => {
 const distPath = path.resolve(__dirname, '../dist');
 if (fs.existsSync(distPath)) {
   console.log(`[Static] Sirviendo archivos estáticos desde: ${distPath}`);
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, { index: false }));
+
+  // Redirección de compatibilidad para enlaces anteriores que apunten a card.png
+  app.get('/card.png', (req, res) => {
+    res.redirect(301, '/A%26D.png');
+  });
 
   // SPA fallback para rutas no-API (ej: /, /admin, /?inv=...) con soporte dinámico de metadatos Open Graph
   app.use((req, res, next) => {
@@ -56,7 +61,8 @@ if (fs.existsSync(distPath)) {
         if (host) {
           const currentOrigin = `${proto}://${host}`;
           html = html
-            .replaceAll('https://boda-quevedo-valencia.paulperez.dev/card.png', `${currentOrigin}/card.png`)
+            .replaceAll('https://boda-quevedo-valencia.paulperez.dev/A%26D.png', `${currentOrigin}/A%26D.png`)
+            .replaceAll('https://boda-quevedo-valencia.paulperez.dev/card.png', `${currentOrigin}/A%26D.png`)
             .replaceAll('https://boda-quevedo-valencia.paulperez.dev/', `${currentOrigin}/`);
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
