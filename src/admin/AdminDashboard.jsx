@@ -16,10 +16,13 @@ import {
   Check,
   AlertCircle,
   TrendingUp,
+  HelpCircle,
+  X,
 } from 'lucide-react';
 import ModalNuevaInvitacion from './ModalNuevaInvitacion.jsx';
 import ModalCapacidad from './ModalCapacidad.jsx';
 import ModalCambiarPassword from './ModalCambiarPassword.jsx';
+import { iniciarGuia } from './adminTour.js';
 
 export default function AdminDashboard({ admin, token, onLogout, showToast }) {
   const [invitaciones, setInvitaciones] = useState([]);
@@ -79,6 +82,16 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
   useEffect(() => {
     cargarDatos();
   }, []);
+
+  // Iniciar la guía interactiva automáticamente la primera vez que visita el panel admin
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => {
+        iniciarGuia(false);
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
 
   // Enviar invitación por WhatsApp (actualiza a 'enviada' y abre WhatsApp)
   const handleEnviarWhatsApp = async (inv) => {
@@ -191,45 +204,62 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
       {/* ── Barra Superior ── */}
       <nav className="admin-navbar">
         <div className="admin-navbar-inner">
-          <div className="admin-brand">
+          <div className="admin-brand" id="tour-brand">
             <span className="admin-brand-title">Boda Quevedo Valencia</span>
             <span className="admin-brand-badge">{admin?.nombre || 'Admin'}</span>
           </div>
 
           <div className="admin-nav-actions">
+            {/* Botón Guía Interactiva (Driver.js) */}
+            <button
+              id="tour-btn-guia"
+              type="button"
+              className="btn-shadcn btn-outline btn-sm btn-guia-nav"
+              onClick={() => iniciarGuia(true)}
+              title="Iniciar tutorial interactivo paso a paso"
+            >
+              <HelpCircle size={15} style={{ color: '#f59e0b' }} />
+              <span className="nav-btn-text">Guía</span>
+            </button>
+
+            {/* Ver Invitación */}
             <a
               href={invitaciones.length > 0 ? `/?inv=${invitaciones[0].token_id}&codigo=${invitaciones[0].codigo_confirmacion}` : '/'}
               target="_blank"
               rel="noreferrer"
               className="btn-shadcn btn-outline btn-sm"
-              title="Abrir invitación con asientos asignados en nueva pestaña"
+              title="Abrir vista de invitado en nueva pestaña"
             >
               <ExternalLink size={14} />
-              <span>Ver Invitación</span>
+              <span className="nav-btn-text">Ver</span>
             </a>
 
+            {/* Capacidad */}
             <button
+              id="tour-btn-capacidad"
               type="button"
               className="btn-shadcn btn-outline btn-sm"
               onClick={() => setModalCapacidadOpen(true)}
               title="Ajustar capacidad total de asientos"
             >
               <Sliders size={14} />
-              <span style={{ display: 'none' }} className="d-md-inline">Capacidad</span>
+              <span className="nav-btn-text">Capacidad</span>
             </button>
 
+            {/* Cambiar contraseña */}
             <button
               type="button"
-              className="btn-shadcn btn-outline btn-sm"
+              className="btn-shadcn btn-outline btn-sm btn-icon"
               onClick={() => setModalPasswordOpen(true)}
-              title="Cambiar contraseña"
+              title="Cambiar contraseña de administrador"
             >
               <KeyRound size={14} />
             </button>
 
+            {/* Cerrar sesión */}
             <button
               type="button"
-              className="btn-shadcn btn-ghost btn-sm"
+              className="btn-shadcn btn-ghost btn-sm btn-icon"
               onClick={onLogout}
               title="Cerrar sesión"
             >
@@ -242,7 +272,7 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
       {/* ── Contenedor Principal ── */}
       <main className="admin-container">
         {/* ── Tarjetas de Métricas (Vercel Style) ── */}
-        <div className="metrics-grid">
+        <div className="metrics-grid" id="tour-metrics">
           {/* Capacidad Total */}
           <div className="metric-card">
             <div className="metric-header">
@@ -323,9 +353,9 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
 
         {/* ── Barra de Búsqueda, Filtros y Creación ── */}
         <div className="actions-bar">
-          <div className="actions-filters">
-            {/* Buscador */}
-            <div className="search-input-wrapper">
+          <div className="actions-header-row">
+            {/* Buscador en tiempo real */}
+            <div className="search-input-wrapper" id="tour-search">
               <Search size={15} className="search-icon" />
               <input
                 type="text"
@@ -334,57 +364,73 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="search-clear-btn"
+                  onClick={() => setSearchTerm('')}
+                  title="Limpiar búsqueda"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
 
-            {/* Pestañas de Filtro (shadcn Tabs) */}
-            <div className="tabs-list">
-              <button
-                type="button"
-                className={`tab-trigger ${selectedTab === 'todas' ? 'active' : ''}`}
-                onClick={() => setSelectedTab('todas')}
-              >
-                Todas <span className="tab-count">{counts.todas}</span>
-              </button>
-              <button
-                type="button"
-                className={`tab-trigger ${selectedTab === 'pendiente' ? 'active' : ''}`}
-                onClick={() => setSelectedTab('pendiente')}
-              >
-                Pendientes <span className="tab-count">{counts.pendiente}</span>
-              </button>
-              <button
-                type="button"
-                className={`tab-trigger ${selectedTab === 'enviada' ? 'active' : ''}`}
-                onClick={() => setSelectedTab('enviada')}
-              >
-                Enviadas <span className="tab-count">{counts.enviada}</span>
-              </button>
-              <button
-                type="button"
-                className={`tab-trigger ${selectedTab === 'confirmada' ? 'active' : ''}`}
-                onClick={() => setSelectedTab('confirmada')}
-              >
-                Confirmadas <span className="tab-count">{counts.confirmada}</span>
-              </button>
-            </div>
+            {/* Botón Crear Nueva Invitación */}
+            <button
+              id="tour-btn-nueva-invitacion"
+              type="button"
+              className="btn-shadcn btn-primary btn-nueva-inv"
+              onClick={() => {
+                setInvitacionParaEditar(null);
+                setModalInvitacionOpen(true);
+              }}
+            >
+              <Plus size={16} />
+              <span>Nueva Invitación</span>
+            </button>
           </div>
 
-          {/* Botón Nueva Invitación */}
-          <button
-            type="button"
-            className="btn-shadcn btn-primary"
-            onClick={() => {
-              setInvitacionParaEditar(null);
-              setModalInvitacionOpen(true);
-            }}
-          >
-            <Plus size={16} />
-            Nueva Invitación
-          </button>
+          {/* Pestañas de Filtro (Tabs Segmentadas) */}
+          <div className="tabs-container" id="tour-tabs">
+            <button
+              type="button"
+              className={`tab-trigger ${selectedTab === 'todas' ? 'active' : ''}`}
+              onClick={() => setSelectedTab('todas')}
+            >
+              <span className="tab-label">Todas</span>
+              <span className="tab-count">{counts.todas}</span>
+            </button>
+            <button
+              type="button"
+              className={`tab-trigger ${selectedTab === 'pendiente' ? 'active' : ''}`}
+              onClick={() => setSelectedTab('pendiente')}
+            >
+              <span className="tab-label">Pendientes</span>
+              <span className="tab-count badge-count-pendiente">{counts.pendiente}</span>
+            </button>
+            <button
+              type="button"
+              className={`tab-trigger ${selectedTab === 'enviada' ? 'active' : ''}`}
+              onClick={() => setSelectedTab('enviada')}
+            >
+              <span className="tab-label">Enviadas</span>
+              <span className="tab-count badge-count-enviada">{counts.enviada}</span>
+            </button>
+            <button
+              type="button"
+              className={`tab-trigger ${selectedTab === 'confirmada' ? 'active' : ''}`}
+              onClick={() => setSelectedTab('confirmada')}
+            >
+              <span className="tab-label">Confirmadas</span>
+              <span className="tab-count badge-count-confirmada">{counts.confirmada}</span>
+            </button>
+          </div>
         </div>
 
         {/* ── Vista de Tabla (Escritorio) ── */}
-        <div className="table-wrapper table-desktop-view">
+        <div className="table-wrapper table-desktop-view" id="tour-list-container">
           <div className="table-responsive">
             <table className="admin-table">
               <thead>
@@ -411,11 +457,11 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
                     </td>
                   </tr>
                 ) : (
-                  invitacionesFiltradas.map((inv) => {
+                  invitacionesFiltradas.map((inv, index) => {
                     const urlInvitacion = `${window.location.origin}/?inv=${inv.token_id}&codigo=${inv.codigo_confirmacion}`;
 
                     return (
-                      <tr key={inv.id}>
+                      <tr key={inv.id} id={index === 0 ? 'tour-invitacion-item' : undefined}>
                         <td>
                           <div style={{ fontWeight: 600, color: '#fafafa' }}>
                             {inv.nombre_familia}
@@ -469,7 +515,7 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
                               title="Enviar invitación por WhatsApp"
                             >
                               <Send size={13} />
-                              {enviandoId === inv.id ? '...' : 'WhatsApp'}
+                              <span>{enviandoId === inv.id ? '...' : 'WhatsApp'}</span>
                             </button>
 
                             {/* Copiar Enlace con Código */}
@@ -491,7 +537,7 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
                               title="Ver cómo ve el invitado su invitación con sus asientos"
                             >
                               <ExternalLink size={13} />
-                              Ver Invitación
+                              <span>Ver Invitación</span>
                             </a>
 
                             {/* Editar */}
@@ -538,11 +584,15 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
               No se encontraron invitaciones.
             </div>
           ) : (
-            invitacionesFiltradas.map((inv) => {
+            invitacionesFiltradas.map((inv, index) => {
               const urlInvitacion = `${window.location.origin}/?inv=${inv.token_id}&codigo=${inv.codigo_confirmacion}`;
 
               return (
-                <div key={inv.id} className="invitacion-card-mobile">
+                <div
+                  key={inv.id}
+                  id={index === 0 ? 'tour-invitacion-item' : undefined}
+                  className="invitacion-card-mobile"
+                >
                   <div className="card-mobile-top">
                     <div>
                       <div className="card-mobile-title">{inv.nombre_familia}</div>
@@ -582,53 +632,61 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
                   </div>
 
                   <div className="card-mobile-actions">
+                    {/* Botón Principal WhatsApp de ancho completo */}
                     <button
                       type="button"
-                      className="btn-shadcn btn-whatsapp btn-sm"
+                      className="btn-shadcn btn-whatsapp card-btn-whatsapp"
                       onClick={() => handleEnviarWhatsApp(inv)}
                       disabled={enviandoId === inv.id}
                     >
-                      <Send size={14} />
-                      {enviandoId === inv.id ? 'Enviando...' : 'WhatsApp'}
+                      <Send size={15} />
+                      <span>{enviandoId === inv.id ? 'Enviando...' : 'Enviar por WhatsApp'}</span>
                     </button>
 
-                    <button
-                      type="button"
-                      className="btn-shadcn btn-outline btn-sm"
-                      onClick={() => handleCopiarEnlace(inv)}
-                    >
-                      {copiandoId === inv.id ? <Check size={14} style={{ color: '#10b981' }} /> : <Copy size={14} />}
-                      Copiar
-                    </button>
+                    {/* Fila de acciones secundarias */}
+                    <div className="card-mobile-secondary-actions">
+                      <button
+                        type="button"
+                        className="btn-shadcn btn-outline btn-sm card-btn-secondary"
+                        onClick={() => handleCopiarEnlace(inv)}
+                        title="Copiar enlace con código"
+                      >
+                        {copiandoId === inv.id ? <Check size={14} style={{ color: '#10b981' }} /> : <Copy size={14} />}
+                        <span>{copiandoId === inv.id ? 'Copiado' : 'Copiar'}</span>
+                      </button>
 
-                    <a
-                      href={urlInvitacion}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="btn-shadcn btn-outline btn-sm btn-icon"
-                      title="Ver invitación"
-                    >
-                      <ExternalLink size={14} />
-                    </a>
+                      <a
+                        href={urlInvitacion}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-shadcn btn-outline btn-sm card-btn-secondary"
+                        title="Ver invitación"
+                      >
+                        <ExternalLink size={14} />
+                        <span>Ver</span>
+                      </a>
 
-                    <button
-                      type="button"
-                      className="btn-shadcn btn-outline btn-sm btn-icon"
-                      onClick={() => {
-                        setInvitacionParaEditar(inv);
-                        setModalInvitacionOpen(true);
-                      }}
-                    >
-                      <Edit2 size={14} />
-                    </button>
+                      <button
+                        type="button"
+                        className="btn-shadcn btn-outline btn-sm card-btn-icon"
+                        onClick={() => {
+                          setInvitacionParaEditar(inv);
+                          setModalInvitacionOpen(true);
+                        }}
+                        title="Editar invitación"
+                      >
+                        <Edit2 size={14} />
+                      </button>
 
-                    <button
-                      type="button"
-                      className="btn-shadcn btn-destructive btn-sm btn-icon"
-                      onClick={() => setInvitacionParaEliminar(inv)}
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                      <button
+                        type="button"
+                        className="btn-shadcn btn-destructive btn-sm card-btn-icon"
+                        onClick={() => setInvitacionParaEliminar(inv)}
+                        title="Eliminar invitación"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

@@ -30,43 +30,72 @@
 .admin-navbar-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.25rem;
-  height: 64px;
+  padding: 0 1rem;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .admin-brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   text-decoration: none;
   color: #fafafa;
+  min-width: 0;
 }
 
 .admin-brand-title {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-brand-badge {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   background-color: #27272a;
   color: #a1a1aa;
-  padding: 0.15rem 0.5rem;
+  padding: 0.12rem 0.45rem;
   border-radius: 9999px;
   border: 1px solid #3f3f46;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 500;
+  flex-shrink: 0;
 }
 
 .admin-nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.nav-btn-text {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .nav-btn-text {
+    display: inline;
+  }
+}
+
+.btn-guia-nav {
+  border-color: rgba(245, 158, 11, 0.35);
+  background-color: rgba(245, 158, 11, 0.08);
+  color: #fbbf24;
+}
+
+.btn-guia-nav:hover {
+  background-color: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+  color: #fde68a;
 }
 
 /* ── Botones Shadcn ───────────────────────────────────────── */
@@ -157,9 +186,41 @@
 /* ── Tarjetas de Métricas (Vercel Style) ─────────────────── */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+    margin-bottom: 1.5rem;
+  }
+  .metric-card {
+    padding: 0.85rem !important;
+  }
+  .metric-value {
+    font-size: 1.45rem !important;
+  }
+  .metric-label {
+    font-size: 0.7rem !important;
+  }
+  .metric-subtext {
+    font-size: 0.7rem !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .metric-card {
@@ -232,28 +293,27 @@
 .actions-bar {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
   margin-bottom: 1.5rem;
 }
 
-@media (min-width: 768px) {
-  .actions-bar {
+.actions-header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .actions-header-row {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
   }
 }
 
-.actions-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .search-input-wrapper {
   position: relative;
-  min-width: 240px;
+  width: 100%;
   flex: 1;
 }
 
@@ -266,60 +326,130 @@
   pointer-events: none;
 }
 
-.input-shadcn {
-  width: 100%;
-  background-color: #09090b;
-  border: 1px solid #27272a;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem 0.5rem 2.25rem;
-  color: #fafafa;
-  font-size: 0.875rem;
-  outline: none;
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-
-.input-shadcn:focus {
-  border-color: #71717a;
-  box-shadow: 0 0 0 1px #71717a;
-}
-
-.tabs-list {
+.search-clear-btn {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #71717a;
   display: flex;
-  background-color: #18181b;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.search-clear-btn:hover {
+  color: #fafafa;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.btn-nueva-inv {
+  height: 40px;
+  padding: 0.5rem 1.15rem;
+  font-size: 0.875rem;
+  justify-content: center;
+}
+
+/* ── Pestañas Rediseñadas (shadcn Segmented Tabs) ────────── */
+.tabs-container {
+  display: flex;
+  background-color: #141417;
   border: 1px solid #27272a;
   padding: 0.25rem;
   border-radius: 8px;
   gap: 0.25rem;
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.tabs-container::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-trigger {
+  flex: 1;
+  min-width: fit-content;
   background: transparent;
   border: none;
   color: #a1a1aa;
-  padding: 0.35rem 0.75rem;
-  font-size: 0.8rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.825rem;
   font-weight: 500;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   white-space: nowrap;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  justify-content: center;
+  gap: 0.45rem;
   transition: all 0.15s ease;
+  user-select: none;
+}
+
+@media (max-width: 480px) {
+  .tab-trigger {
+    padding: 0.45rem 0.5rem;
+    font-size: 0.775rem;
+    gap: 0.35rem;
+  }
+}
+
+.tab-trigger:hover:not(.active) {
+  color: #f4f4f5;
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 .tab-trigger.active {
   background-color: #27272a;
   color: #fafafa;
   font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .tab-count {
   font-size: 0.7rem;
+  font-weight: 600;
   background-color: rgba(255, 255, 255, 0.08);
-  padding: 0.1rem 0.35rem;
+  color: #a1a1aa;
+  padding: 0.1rem 0.45rem;
   border-radius: 9999px;
+  transition: all 0.15s ease;
+}
+
+.tab-trigger.active .tab-count {
+  background-color: rgba(255, 255, 255, 0.18);
+  color: #fafafa;
+}
+
+.badge-count-pendiente {
+  color: #fbbf24;
+}
+.tab-trigger.active .badge-count-pendiente {
+  background-color: rgba(251, 191, 36, 0.2);
+  color: #fde68a;
+}
+
+.badge-count-enviada {
+  color: #60a5fa;
+}
+.tab-trigger.active .badge-count-enviada {
+  background-color: rgba(96, 165, 250, 0.2);
+  color: #bfdbfe;
+}
+
+.badge-count-confirmada {
+  color: #34d399;
+}
+.tab-trigger.active .badge-count-confirmada {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #a7f3d0;
 }
 
 /* ── Tabla de Invitaciones (Desktop) ─────────────────────── */
@@ -465,12 +595,40 @@
 }
 
 .card-mobile-actions {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
   margin-top: 0.5rem;
   padding-top: 0.75rem;
   border-top: 1px solid #27272a;
+}
+
+.card-btn-whatsapp {
+  width: 100%;
+  height: 40px;
+  font-weight: 600;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.card-mobile-secondary-actions {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr auto auto;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.card-btn-secondary {
+  height: 36px;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+.card-btn-icon {
+  height: 36px;
+  width: 36px;
+  padding: 0;
+  justify-content: center;
 }
 
 /* ── Modales Shadcn (Dialog) ─────────────────────────────── */
@@ -668,4 +826,107 @@
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Driver.js Custom Vercel / shadcn Dark Theme ─────────── */
+.driver-popover {
+  background-color: #121215 !important;
+  border: 1px solid #3f3f46 !important;
+  color: #fafafa !important;
+  border-radius: 10px !important;
+  padding: 1.25rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
+  font-family: inherit !important;
+  max-width: 360px !important;
+  z-index: 1000000000 !important;
+}
+
+.driver-popover-title {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.35 !important;
+}
+
+.driver-popover-description {
+  font-size: 0.85rem !important;
+  color: #d4d4d8 !important;
+  line-height: 1.55 !important;
+  margin-bottom: 1rem !important;
+}
+
+.driver-popover-description b {
+  color: #fafafa !important;
+}
+
+.driver-popover-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-top: 1rem !important;
+  padding-top: 0.75rem !important;
+  border-top: 1px solid #27272a !important;
+}
+
+.driver-popover-progress-text {
+  font-size: 0.75rem !important;
+  color: #a1a1aa !important;
+  font-weight: 500 !important;
+}
+
+.driver-popover-footer button {
+  font-family: inherit !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  padding: 0.4rem 0.8rem !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.driver-popover-prev-btn {
+  background-color: transparent !important;
+  border: 1px solid #27272a !important;
+  color: #d4d4d8 !important;
+  text-shadow: none !important;
+}
+
+.driver-popover-prev-btn:hover {
+  background-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+.driver-popover-next-btn {
+  background-color: #fafafa !important;
+  border: 1px solid #fafafa !important;
+  color: #09090b !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+.driver-popover-next-btn:hover {
+  background-color: #e4e4e7 !important;
+}
+
+.driver-popover-close-btn {
+  color: #71717a !important;
+  transition: color 0.15s !important;
+}
+
+.driver-popover-close-btn:hover {
+  color: #fafafa !important;
+}
+
+.driver-popover-arrow-side-top {
+  border-top-color: #121215 !important;
+}
+.driver-popover-arrow-side-bottom {
+  border-bottom-color: #121215 !important;
+}
+.driver-popover-arrow-side-left {
+  border-left-color: #121215 !important;
+}
+.driver-popover-arrow-side-right {
+  border-right-color: #121215 !important;
 }
