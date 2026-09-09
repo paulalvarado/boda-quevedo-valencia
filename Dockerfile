@@ -28,7 +28,7 @@ WORKDIR /app
 # para garantizar funcionamiento inmediato en Dokploy sin depender de .env
 ENV NODE_ENV=production \
     PORT=3000 \
-    DB_HOST=db \
+    DB_HOST=boda-quevedo-valencia-db-coxv4h \
     DB_PORT=3306 \
     DB_USER=boda-quevedo-valencia-user \
     DB_PASSWORD=boda-quevedo-valencia-pass \
