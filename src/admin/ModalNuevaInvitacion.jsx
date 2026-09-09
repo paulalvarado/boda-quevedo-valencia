@@ -255,6 +255,7 @@ export default function ModalNuevaInvitacion({
               Cancelar
             </button>
             <button
+              id="tour-btn-guardar-invitacion"
               type="submit"
               className="btn-shadcn btn-primary"
               disabled={loading}

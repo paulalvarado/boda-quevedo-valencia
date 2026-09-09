@@ -72,7 +72,7 @@ export default function ModalCapacidad({
         {error && <div className="login-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="form-group" id="tour-form-capacidad">
             <label className="form-label" htmlFor="capacidad">
               Número Total de Asientos
             </label>
@@ -115,6 +115,7 @@ export default function ModalCapacidad({
               Cancelar
             </button>
             <button
+              id="tour-btn-guardar-capacidad"
               type="submit"
               className="btn-shadcn btn-primary"
               disabled={loading}

@@ -208,11 +208,29 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Controladores de apertura y cierre de modales para el tour interactivo paso a paso
+  const modalControls = {
+    openCapacidad: () => setModalCapacidadOpen(true),
+    closeCapacidad: () => setModalCapacidadOpen(false),
+    openInvitacion: () => {
+      setInvitacionParaEditar(null);
+      setModalInvitacionOpen(true);
+    },
+    closeInvitacion: () => setModalInvitacionOpen(false),
+    openMensaje: () => setModalMensajeOpen(true),
+    closeMensaje: () => setModalMensajeOpen(false),
+    closeAll: () => {
+      setModalCapacidadOpen(false);
+      setModalInvitacionOpen(false);
+      setModalMensajeOpen(false);
+    },
+  };
+
   // Iniciar la guía interactiva automáticamente la primera vez que visita el panel admin
   useEffect(() => {
     if (!loading) {
       const timer = setTimeout(() => {
-        iniciarGuia(false);
+        iniciarGuia(false, modalControls);
       }, 700);
       return () => clearTimeout(timer);
     }
@@ -343,7 +361,7 @@ export default function AdminDashboard({ admin, token, onLogout, showToast }) {
               id="tour-btn-guia"
               type="button"
               className="btn-shadcn btn-outline btn-sm btn-guia-nav"
-              onClick={() => iniciarGuia(true)}
+              onClick={() => iniciarGuia(true, modalControls)}
               title="Iniciar tutorial interactivo paso a paso"
             >
               <HelpCircle size={15} style={{ color: '#f59e0b' }} />

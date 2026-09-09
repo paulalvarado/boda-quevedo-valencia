@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, MessageSquare, RotateCcw, Check, Sparkles, Tag } from 'lucide-react';
+import { X, MessageSquare, RotateCcw, Check, Sparkles, Tag, Plus } from 'lucide-react';
 
 const DEFAULT_MENSAJE =
   '¡Hola {familia}! 💍✨ Nos hace una inmensa ilusión compartir con ustedes el día de nuestra boda. Tienen reservado(s) {asientos} espacio(s). Por favor vean todos los detalles y confirmen su asistencia en el siguiente enlace:\n\n{enlace}';
@@ -25,6 +25,7 @@ export default function ModalMensajeWhatsApp({
   const [error, setError] = useState(null);
   const [invitacionSeleccionadaIndex, setInvitacionSeleccionadaIndex] = useState(0);
   const textareaRef = useRef(null);
+  const backdropRef = useRef(null);
 
   useEffect(() => {
     if (mensajeActual) {
@@ -36,6 +37,14 @@ export default function ModalMensajeWhatsApp({
   }, [mensajeActual, isOpen]);
 
   if (!isOpen) return null;
+
+  // Sincronizar scroll entre el textarea y el fondo resaltador
+  const handleScrollSync = (e) => {
+    if (backdropRef.current) {
+      backdropRef.current.scrollTop = e.target.scrollTop;
+      backdropRef.current.scrollLeft = e.target.scrollLeft;
+    }
+  };
 
   // Insertar etiqueta en la posición del cursor del textarea
   const handleInsertTag = (tagKey) => {
@@ -60,6 +69,9 @@ export default function ModalMensajeWhatsApp({
       textarea.focus();
       const newCursorPos = startPos + tagKey.length;
       textarea.setSelectionRange(newCursorPos, newCursorPos);
+      if (backdropRef.current) {
+        backdropRef.current.scrollTop = textarea.scrollTop;
+      }
     }, 0);
   };
 
@@ -101,6 +113,23 @@ export default function ModalMensajeWhatsApp({
     } finally {
       setLoading(false);
     }
+  };
+
+  // Renderizar contenido con variables resaltadas en verde en el fondo del editor
+  const renderHighlightedContent = (text) => {
+    if (!text) return null;
+    const parts = text.split(/({familia}|{asientos}|{enlace}|{codigo})/g);
+    return parts.map((part, idx) => {
+      const isTag = ['{familia}', '{asientos}', '{enlace}', '{codigo}'].includes(part);
+      if (isTag) {
+        return (
+          <mark key={idx} className="smart-highlight-tag">
+            {part}
+          </mark>
+        );
+      }
+      return <span key={idx}>{part}</span>;
+    });
   };
 
   // Obtener datos de ejemplo para la simulación en tiempo real
@@ -167,37 +196,50 @@ export default function ModalMensajeWhatsApp({
           {/* Columna Izquierda: Editor y Etiquetas */}
           <div className="modal-mensaje-col-editor">
             {/* Gestión de Etiquetas Inteligentes */}
-            <div className="tags-management-section">
+            <div className="tags-management-section" id="tour-msg-tags">
               <div className="tags-header">
                 <span className="tags-title">
                   <Tag size={13} />
-                  Etiquetas dinámicas disponibles
+                  Etiquetas dinámicas (se iluminan en verde al estar presentes)
                 </span>
-                <span className="tags-subtitle">Haz clic en una etiqueta para insertarla</span>
+                <span className="tags-subtitle">Haz clic para insertar</span>
               </div>
 
               <div className="tags-chips-container">
-                {TAGS_DISPONIBLES.map((tag) => (
-                  <button
-                    key={tag.key}
-                    type="button"
-                    className="tag-chip-btn"
-                    onClick={() => handleInsertTag(tag.key)}
-                    title={`Insertar ${tag.key}: ${tag.desc}`}
-                  >
-                    <span className="tag-chip-key">{tag.key}</span>
-                    <span className="tag-chip-label">{tag.label}</span>
-                  </button>
-                ))}
+                {TAGS_DISPONIBLES.map((tag) => {
+                  const isPresent = mensaje.includes(tag.key);
+                  return (
+                    <button
+                      key={tag.key}
+                      type="button"
+                      className={`tag-chip-btn ${isPresent ? 'tag-chip-active' : ''}`}
+                      onClick={() => handleInsertTag(tag.key)}
+                      title={
+                        isPresent
+                          ? `${tag.key} ya está incluida en el mensaje (haz clic para insertar nuevamente)`
+                          : `Insertar ${tag.key}: ${tag.desc}`
+                      }
+                    >
+                      <span className="tag-chip-icon">
+                        {isPresent ? <Check size={12} className="tag-check-icon" /> : <Plus size={11} />}
+                      </span>
+                      <span className="tag-chip-key">{tag.key}</span>
+                      <span className="tag-chip-label">
+                        {tag.label}
+                      </span>
+                      {isPresent && <span className="tag-active-badge">Activa</span>}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Formulario de Edición */}
             <form onSubmit={handleSubmit} className="mensaje-editor-form">
-              <div className="form-group">
+              <div className="form-group" id="tour-msg-textarea">
                 <div className="textarea-header-bar">
                   <label htmlFor="mensaje-template-input" className="form-label">
-                    Texto del Mensaje
+                    Editor de Mensaje Inteligente
                   </label>
                   <button
                     type="button"
@@ -210,16 +252,48 @@ export default function ModalMensajeWhatsApp({
                   </button>
                 </div>
 
-                <textarea
-                  id="mensaje-template-input"
-                  ref={textareaRef}
-                  className="input-shadcn textarea-mensaje"
-                  rows={7}
-                  value={mensaje}
-                  onChange={(e) => setMensaje(e.target.value)}
-                  placeholder="Escribe el mensaje de WhatsApp..."
-                  required
-                />
+                {/* Contenedor del Input Inteligente con Resaltado en Verde */}
+                <div className="smart-textarea-wrapper">
+                  <div
+                    className="smart-textarea-backdrop"
+                    ref={backdropRef}
+                    aria-hidden="true"
+                  >
+                    {renderHighlightedContent(mensaje)}
+                  </div>
+                  <textarea
+                    id="mensaje-template-input"
+                    ref={textareaRef}
+                    className="input-shadcn smart-textarea-input"
+                    rows={7}
+                    value={mensaje}
+                    onChange={(e) => setMensaje(e.target.value)}
+                    onScroll={handleScrollSync}
+                    placeholder="Escribe el mensaje de WhatsApp..."
+                    required
+                  />
+                </div>
+
+                {/* Barra de Estado de Variables Detectadas en Vivo */}
+                <div className="active-tags-status-bar">
+                  <div className="active-tags-status-pills">
+                    {TAGS_DISPONIBLES.map((tag) => {
+                      const isPresent = mensaje.includes(tag.key);
+                      return (
+                        <span
+                          key={tag.key}
+                          className={`variable-status-pill ${isPresent ? 'status-pill-active' : 'status-pill-inactive'}`}
+                        >
+                          <span className="status-pill-dot" />
+                          <span className="status-pill-key">{tag.key}</span>
+                          <span className="status-pill-state">
+                            {isPresent ? 'Activa' : 'No incluida'}
+                          </span>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
 
                 <div className="textarea-footer-info">
                   <span className="textarea-char-count">
@@ -243,7 +317,7 @@ export default function ModalMensajeWhatsApp({
               {invitaciones.length > 0 && (
                 <div className="preview-selector-bar">
                   <label htmlFor="select-sample-inv" className="preview-selector-label">
-                    Previsualizar con datos de:
+                    Previsualizar en WhatsApp con datos de:
                   </label>
                   <select
                     id="select-sample-inv"
@@ -271,6 +345,7 @@ export default function ModalMensajeWhatsApp({
                   Cancelar
                 </button>
                 <button
+                  id="tour-msg-btn-guardar"
                   type="submit"
                   className="btn-shadcn btn-primary"
                   disabled={loading}
@@ -282,7 +357,7 @@ export default function ModalMensajeWhatsApp({
           </div>
 
           {/* Columna Derecha: Vista Previa en Tiempo Real estilo WhatsApp */}
-          <div className="modal-mensaje-col-preview">
+          <div className="modal-mensaje-col-preview" id="tour-msg-preview-card">
             <div className="wa-preview-header-label">
               <Sparkles size={14} style={{ color: '#10b981' }} />
               <span>Simulación WhatsApp en Tiempo Real</span>
