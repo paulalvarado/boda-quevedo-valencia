@@ -36,7 +36,7 @@ function DetallesDelEvento({ zIndex, marginTop, marginBottom }) {
                 </div>
                 <div className="detalles-recepcion">
                     <span>Recepción</span>
-                    <span>4:30 pm</span>
+                    <span>6:30 pm</span>
                 </div>
                 <div className="detalles-botones">
                     {/* {Google Maps} */}
