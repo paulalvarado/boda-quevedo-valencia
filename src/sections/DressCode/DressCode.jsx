@@ -6,7 +6,7 @@ import cremaImg from '../../assets/6_dress_code/Vector Smart Object copy 4.png';
 import sugerido1Img from '../../assets/6_dress_code/Vector Smart Object copy 4-3.png';
 import sugerido2Img from '../../assets/6_dress_code/Vector Smart Object copy 4-1.png';
 import sugerido3Img from '../../assets/6_dress_code/Vector Smart Object copy 4-2.png';
-import sugerido4Img from '../../assets/6_dress_code/Vector Smart Object copy 4.png';
+import sugerido4Img from '../../assets/6_dress_code/Vector Smart Object copy.png';
 
 function DressCode({ zIndex, marginTop, marginBottom }) {
 	return (
@@ -30,10 +30,10 @@ function DressCode({ zIndex, marginTop, marginBottom }) {
                             <img src={blancoImg} alt="Color blanco" />
                         </div>
                         <div className="dress-code-color">
-                            <img src={beigeImg} alt="Color beige" />
+                            <img src={sugerido4Img} alt="Color beige" />
                         </div>
                         <div className="dress-code-color">
-                            <img src={cremaImg} alt="Color crema" />
+                            <img src={beigeImg} alt="Color crema" />
                         </div>
                     </div>
                     <p style={{ textAlign: 'center', fontSize: '14px', fontWeight: '500', lineHeight: '1', margin: '10px 0' }}>BLANCO ● BEIGE ● CREMA<br />CUALQUIER TONO DE AZUL</p>
@@ -49,7 +49,7 @@ function DressCode({ zIndex, marginTop, marginBottom }) {
                             <img src={sugerido3Img} alt="Color crema" />
                         </div>
                         <div className="dress-code-color">
-                            <img src={sugerido4Img} alt="Color crema" />
+                            <img src={cremaImg} alt="Color crema" />
                         </div>
                     </div>
                     <p style={{ fontSize: '18px', marginTop: '30px'}}><i>El blanco queda reservado<br />exclusivamente para la novia.</i></p>
